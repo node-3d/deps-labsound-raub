@@ -1,0 +1,11 @@
+node_modules
+*.log
+build*
+.DS_Store
+*.pro.user
+*.exp
+*.pdb
+*.ilk
+.gitignore
+package-lock.json
+test

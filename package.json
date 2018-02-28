@@ -1,0 +1,33 @@
+{
+	"name": "deps-labsound-raub",
+	"author": "Luis Blanco <raubtierxxx@gmail.com>",
+	"description": "Binaries and headers for LabSound-dependent compilation",
+	"version": "0.0.1",
+	"main": "index.js",
+	"keywords": [
+		"labsound",
+		"audio",
+		"sound",
+		"webaudio",
+		"deps",
+		"dependency",
+		"lib",
+		"library",
+		"binary"
+	],
+	"maintainers": [
+		{
+			"name": "Luis Blanco",
+			"email": "raubtierxxx@gmail.com",
+			"skype": "rauber666"
+		}
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/raub/node-deps-labsound"
+	},
+	"dependencies": {
+		"addon-tools-raub": "0.0.8"
+	}
+}
