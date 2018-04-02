@@ -2,7 +2,7 @@
 	"name": "deps-labsound-raub",
 	"author": "Luis Blanco <raubtierxxx@gmail.com>",
 	"description": "Binaries and headers for LabSound-dependent compilation",
-	"version": "0.0.2",
+	"version": "0.0.7",
 	"main": "index.js",
 	"keywords": [
 		"labsound",
@@ -28,6 +28,6 @@
 		"url": "https://github.com/raub/node-deps-labsound"
 	},
 	"dependencies": {
-		"addon-tools-raub": "0.1.1"
+		"addon-tools-raub": "0.1.5"
 	}
 }
