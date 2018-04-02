@@ -74,3 +74,14 @@ any audio algorithms are changed/invented within this repository.
 ```cpp
 #include <...>
 ```
+
+
+### HRTF Database
+
+If you even know what this is... The copy of
+[LabSound's HRTF Assets](https://github.com/LabSound/LabSound/tree/master/assets/hrtf)
+is contained in the **hrtf** directory. And its path is accessible as:
+
+```
+const { hrtf } = require('deps-labsound-raub');
+```
