@@ -21,9 +21,10 @@ class AudioBus;
 // The number of channels of the input's bus is the maximum of the number of channels of all its connections.
 class AudioNodeInput : public AudioSummingJunction 
 {
-
 public:
-
+    /// @TODO it is a bug that AudioNodeInput holds a raw pointer to an audio node
+    /// as the audionodeinput will outlive the node if it is being processed in 
+    /// the audio thread when the audio node is destructed
     explicit AudioNodeInput(AudioNode*);
     virtual ~AudioNodeInput();
 

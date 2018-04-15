@@ -2,7 +2,7 @@
 	"name": "deps-labsound-raub",
 	"author": "Luis Blanco <raubtierxxx@gmail.com>",
 	"description": "Binaries and headers for LabSound-dependent compilation",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"main": "index.js",
 	"keywords": [
 		"labsound",
