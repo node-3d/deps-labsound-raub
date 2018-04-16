@@ -21,9 +21,6 @@ class AudioBus;
 class AudioNodeOutput 
 {
 public:
-    /// @TODO it is a bug that AudioNodeOutput holds a raw pointer to an audio node
-    /// as the audionodeinput will outlive the node if it is being processed in 
-    /// the audio thread when the audio node is destructed
 
     // It's OK to pass 0 for numberOfChannels in which case setNumberOfChannels() must be called later on.
     AudioNodeOutput(AudioNode*, unsigned numberOfChannels);

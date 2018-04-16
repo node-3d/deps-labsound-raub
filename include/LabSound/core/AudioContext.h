@@ -101,7 +101,7 @@ public:
     // event dispatching will be called automatically, depending on constructor
     // argument. If not automatically dispatching, it is the user's responsibility
     // to call dispatchEvents often enough to satisfy the user's needs.
-    void enqueueEvent(std::function<void()> &&);
+    void enqueueEvent(std::function<void()>&);
     void dispatchEvents();
 
 private:
