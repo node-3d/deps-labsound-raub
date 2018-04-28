@@ -10,7 +10,7 @@
 		"labsound",
 		"engine",
 		"audio",
-		"sound",
+		"sound"
 	],
 	"engines": {
 		"node": ">=8.11.1",
