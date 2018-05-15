@@ -1,7 +1,7 @@
 {
 	"author": "Luis Blanco <luisblanco1337@gmail.com>",
 	"name": "deps-labsound-raub",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"description": "Binaries and headers for LabSound-dependent compilation",
 	"license": "MIT",
 	"main": "index.js",
@@ -28,6 +28,6 @@
 		"url": "https://github.com/node-3d/deps-labsound-raub.git"
 	},
 	"dependencies": {
-		"addon-tools-raub": "0.1.8"
+		"addon-tools-raub": "^2.0.1"
 	}
 }
