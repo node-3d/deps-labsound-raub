@@ -6,10 +6,10 @@ const fs = require('fs');
 const { expect } = require('chai');
 const { stub, spy } = require('sinon');
 
-const deps = require('deps-bullet-raub');
+const deps = require('deps-labsound-raub');
 
 
-const depsDir = path.dirname(require.resolve('deps-bullet-raub')).replace(/\\/g, '/')
+const depsDir = path.dirname(require.resolve('deps-labsound-raub')).replace(/\\/g, '/')
 const pathsMethods = ['bin', 'rem', 'include'];
 
 
