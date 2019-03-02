@@ -50,13 +50,8 @@ win32 {
 	
 } else {
 	
-	contains(QMAKE_TARGET.arch, x86_64) { # x64
-		DESTDIR = $$PWD/../build/bin-linux64
-		LIBS += -L$$PWD/../build/bin-linux64
-	} else { # x32
-		DESTDIR = $$PWD/../build/bin-linux32
-		LIBS += -L$$PWD/../build/bin-linux32
-	}
+	DESTDIR = $$PWD/../build/bin-linux64
+	LIBS += -L$$PWD/../build/bin-linux64
 	
 	SOURCES += $$PWD/../third_party/rtaudio/src/RtAudio.cpp
 	
