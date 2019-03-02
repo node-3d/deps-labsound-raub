@@ -14,7 +14,7 @@ matrix:
     os: linux
     env:
       - NEEDS_UPLOAD=true
-      - UPLOAD_FILE=src/LabSound-master/build/bin-linux64/liblabsound.so
+      - UPLOAD_FILE=src/LabSound-master/build/bin-linux64/liblabsound.a
       - UPLOAD_NAME=Linux
     if: commit_message =~ /^:hammer:/
     language: cpp
@@ -38,7 +38,7 @@ matrix:
     os: osx
     env:
       - NEEDS_UPLOAD=true
-      - UPLOAD_FILE=src/LabSound-master/build/bin-mac64/liblabsound.dylib
+      - UPLOAD_FILE=src/LabSound-master/build/bin-mac64/liblabsound.a
       - UPLOAD_NAME=OSX
     if: commit_message =~ /^:hammer:/
     language: cpp
