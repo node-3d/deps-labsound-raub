@@ -2,20 +2,22 @@
 
 This is a part of [Node3D](https://github.com/node-3d) project.
 
+[![NPM](https://nodei.co/npm/deps-labsound-raub.png?compact=true)](https://www.npmjs.com/package/deps-labsound-raub)
+
+[![Build Status](https://api.travis-ci.com/node-3d/deps-labsound-raub.svg?branch=master)](https://travis-ci.com/node-3d/deps-labsound-raub)
+[![CodeFactor](https://www.codefactor.io/repository/github/node-3d/deps-labsound-raub/badge)](https://www.codefactor.io/repository/github/node-3d/deps-labsound-raub)
+
+> npm i -s deps-labsound-raub
+
 
 ## Synopsis
 
 This dependency package is distributing **LabSound**
 binaries through **NPM** for **Node.js** addons.
 
-* Platforms: win x32/x64, linux x32/x64, mac x64.
+* Platforms: win x32/x64, linux x64, mac x64.
 * Library: LabSound audio.
 * Linking: static lib-type.
-
-
-## Install
-
-`npm i -s deps-labsound-raub`
 
 
 ## Usage
@@ -37,36 +39,19 @@ binaries through **NPM** for **Node.js** addons.
 				...
 			],
 			
-			'library_dirs': [ '<(labsound_bin)' ],
-			'libraries'    : [ '-llabsound', '-llibnyquist' ],
+			'library_dirs': ['<(labsound_bin)'],
+			'libraries'    : ['-llabsound'],
 			
 			'conditions': [
-				
-				['OS=="linux"', {
-					'libraries': [
-						'-Wl,-rpath,<(labsound_bin)',
-					],
-				}],
-				
-				['OS=="mac"', {
-					'libraries': [
-						'-Wl,-rpath,<(labsound_bin)',
-				}],
-				
 				['OS=="win"', {
 					'libraries' : [ '-lwinmm', '-lole32', '-luser32', '-lgdi32' ],
 				}],
-				
 			],
 		},
 ```
 
-
-**addon.cpp**
-
-```cpp
-#include <...>
-```
+LabSound C++ interface is available as documented (if) in the
+[official repository](https://github.com/LabSound/LabSound).
 
 
 ### HRTF Database
