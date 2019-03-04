@@ -32,7 +32,7 @@ win32 {
 	DEFINES += HAVE_NO_OFLOG HAVE_BOOST_THREAD HAVE_LIBDL HAVE_ALLOCA HAVE_UNISTD_H
 	DEFINES += __OS_WINDOWS__ __LITTLE_ENDIAN__
 	
-	SOURCES += $$files($$PWD/../src/internal/src/win/*.cpp)
+	SOURCES += $$files($$PWD/../src/backends/windows/*.cpp)
 	SOURCES += $$PWD/../third_party/rtaudio/src/RtAudio.cpp
 	SOURCES += $$PWD/../third_party/STK/src/STKInlineCompile.cpp
 	
@@ -46,13 +46,14 @@ win32 {
 	DESTDIR = $$PWD/../build/bin-mac64
 	LIBS += -L$$PWD/../build/bin-mac64
 	
-	SOURCES += $$files($$PWD/../src/internal/src/mac/*.cpp)
+	SOURCES += $$files($$PWD/../src/backends/darwin/*.cpp)
 	
 } else {
 	
 	DESTDIR = $$PWD/../build/bin-linux64
 	LIBS += -L$$PWD/../build/bin-linux64
 	
+	SOURCES += $$files($$PWD/../src/backends/linux/*.cpp)
 	SOURCES += $$PWD/../third_party/rtaudio/src/RtAudio.cpp
 	
 }
@@ -121,16 +122,6 @@ INCLUDEPATH += \
 	$$PWD/../third_party/libnyquist/src
 
 SOURCES += \
-	$$PWD/../third_party/libnyquist/src/Common.cpp \
-	$$PWD/../third_party/libnyquist/src/Encoders.cpp \
-	$$PWD/../third_party/libnyquist/src/FlacDecoder.cpp \
-	$$PWD/../third_party/libnyquist/src/FlacDependencies.c \
-	$$PWD/../third_party/libnyquist/src/Mp3Decoder.cpp \
-	$$PWD/../third_party/libnyquist/src/MusepackDecoder.cpp \
-	$$PWD/../third_party/libnyquist/src/MusepackDependencies.c \
-	$$PWD/../third_party/libnyquist/src/OpusDecoder.cpp \
-	$$PWD/../third_party/libnyquist/src/OpusDependencies.c \
-	$$PWD/../third_party/libnyquist/src/VorbisDecoder.cpp \
-	$$PWD/../third_party/libnyquist/src/VorbisDependencies.c \
-	$$PWD/../third_party/libnyquist/src/WavDecoder.cpp \
-	$$PWD/../third_party/libnyquist/src/WavPackDecoder.cpp
+	$$files($$PWD/../third_party/libnyquist/src/*.cpp) \
+	$$files($$PWD/../third_party/libnyquist/src/*.c) \
+	$$files($$PWD/../third_party/libnyquist/third_party/wavpack/src/*.c)
