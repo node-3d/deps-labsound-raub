@@ -65,8 +65,7 @@ INCLUDEPATH += \
 	$$PWD/../src \
 	$$PWD/../src/internal \
 	$$PWD/../third_party \
-	$$PWD/../third_party/STK \
-	$$PWD/../third_party/libnyquist/include
+	$$PWD/../third_party/STK
 
 
 SOURCES += \
@@ -75,6 +74,7 @@ SOURCES += \
 	$$files($$PWD/../src/internal/src/*.cpp) \
 	$$files($$PWD/../third_party/kissfft/src/*.cpp) \
 	$$files($$PWD/../third_party/ooura/src/*.cpp)
+
 
 # libopus
 
