@@ -52,7 +52,7 @@ public:
 
     bool isInitialized() const;
 
-    // Eexternal users shouldn't use this; it should be called by LabSound::MakeRealtimeAudioContext()
+    // External users shouldn't use this; it should be called by LabSound::MakeRealtimeAudioContext(lab::Channels::Stereo)
     // It *is* harmless to call it though, it's just not necessary.
     void lazyInitialize();
 
@@ -69,11 +69,6 @@ public:
     float sampleRate() const;
 
     AudioListener & listener();
-
-    unsigned long activeSourceCount() const;
-
-    void incrementActiveSourceCount();
-    void decrementActiveSourceCount();
 
     void handlePreRenderTasks(ContextRenderLock &); // Called at the start of each render quantum.
     void handlePostRenderTasks(ContextRenderLock &); // Called at the end of each render quantum.
@@ -158,13 +153,14 @@ private:
         uint32_t destIndex;
         uint32_t srcIndex;
         float duration = 0.1f;
+        
         PendingConnection(
             std::shared_ptr<AudioNode> destination,
             std::shared_ptr<AudioNode> source,
             ConnectionType t,
             uint32_t destIndex = 0,
             uint32_t srcIndex = 0)
-            : destination(destination), source(source), type(t), destIndex(destIndex), srcIndex(srcIndex) { }
+        : type(t), destination(destination), source(source), destIndex(destIndex), srcIndex(srcIndex) { }
     };
 
     struct CompareScheduledTime

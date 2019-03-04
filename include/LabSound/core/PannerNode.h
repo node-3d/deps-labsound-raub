@@ -27,9 +27,9 @@ class HRTFDatabaseLoader;
 
 class PannerNode : public AudioNode
 {
-    std::shared_ptr<AudioParam> m_forwardX;
-    std::shared_ptr<AudioParam> m_forwardY;
-    std::shared_ptr<AudioParam> m_forwardZ;
+    std::shared_ptr<AudioParam> m_orientationX;
+    std::shared_ptr<AudioParam> m_orientationY;
+    std::shared_ptr<AudioParam> m_orientationZ;
     std::shared_ptr<AudioParam> m_velocityX;
     std::shared_ptr<AudioParam> m_velocityY;
     std::shared_ptr<AudioParam> m_velocityZ;
@@ -62,16 +62,20 @@ public:
 
     // Position
     void setPosition(float x, float y, float z) { setPosition(FloatPoint3D(x, y, z)); }
-    void setPosition(const FloatPoint3D& position);
+    void setPosition(const FloatPoint3D & position);
+
     std::shared_ptr<AudioParam> positionX() const { return m_positionX; }
     std::shared_ptr<AudioParam> positionY() const { return m_positionY; }
     std::shared_ptr<AudioParam> positionZ() const { return m_positionZ; }
 
-    // Forward
-    void setForward(const FloatPoint3D& fwd);
-    std::shared_ptr<AudioParam> forwardX() const { return m_forwardX; }
-    std::shared_ptr<AudioParam> forwardY() const { return m_forwardY; }
-    std::shared_ptr<AudioParam> forwardZ() const { return m_forwardZ; }
+    // The orientation property indicates the X component of the direction in
+    // which the audio source is facing, in cartesian space. The complete
+    // vector is defined by the position of the audio source, and the direction
+    // in which it is facing.
+    void setOrientation(const FloatPoint3D& fwd);
+    std::shared_ptr<AudioParam> orientationX() const { return m_orientationX; }
+    std::shared_ptr<AudioParam> orientationY() const { return m_orientationY; }
+    std::shared_ptr<AudioParam> orientationZ() const { return m_orientationZ; }
 
     // Velocity
     void setVelocity(float x, float y, float z) { setVelocity(FloatPoint3D(x, y, z)); }
