@@ -40,7 +40,7 @@ win32 {
 	
 } else:macx {
 	
-	DEFINES += PD __MACOSX_CORE__ OSX
+	DEFINES += __MACOSX_CORE__ OSX
 	
 	DESTDIR = $$PWD/../build/bin-mac64
 	LIBS += -L$$PWD/../build/bin-mac64
