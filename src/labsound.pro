@@ -66,6 +66,7 @@ INCLUDEPATH += \
 	$$PWD/../src \
 	$$PWD/../src/internal \
 	$$PWD/../include/LabSound/extended \
+	$$PWD/../include/LabSound/core \
 	$$PWD/../third_party \
 	$$PWD/../third_party/STK
 
