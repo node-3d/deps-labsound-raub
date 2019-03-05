@@ -49,7 +49,7 @@ win32 {
 	
 } else {
 	
-	DEFINES += __LINUX_ALSA__
+	DEFINES += __LINUX_ALSA__ LABSOUND_ASOUND=1
 	DESTDIR = $$PWD/../build/bin-linux64
 	LIBS += -L$$PWD/../build/bin-linux64
 	
