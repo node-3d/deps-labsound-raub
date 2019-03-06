@@ -12,12 +12,14 @@ matrix:
     os: osx
   - name: "Linux Build"
     os: linux
+    dist: xenial
     env:
       - NEEDS_UPLOAD=true
       - UPLOAD_FILE=src/LabSound-master/build/bin-linux64/liblabsound.a
       - UPLOAD_NAME=Linux
     if: commit_message =~ /^:hammer:/
     language: cpp
+    compiler: gcc
     cache:
       directories:
        - /home/travis/qt-linux
