@@ -78,6 +78,8 @@ SOURCES += \
 	$$files($$PWD/../third_party/kissfft/src/*.cpp) \
 	$$files($$PWD/../third_party/ooura/src/*.cpp)
 
+SOURCES -= $$PWD/../src/extended/PowerMonitorNode.cpp
+
 
 # libopus
 
