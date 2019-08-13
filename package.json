@@ -1,7 +1,7 @@
 {
 	"author": "Luis Blanco <luisblanco1337@gmail.com>",
 	"name": "deps-labsound-raub",
-	"version": "2.0.0",
+	"version": "1.0.0",
 	"description": "Binaries and headers for LabSound-dependent compilation",
 	"license": "MIT",
 	"main": "index.js",
@@ -35,7 +35,7 @@
 		"README.md"
 	],
 	"config": {
-		"install": "v2.0.0"
+		"install": "v1.0.0"
 	},
 	"scripts": {
 		"postinstall": "node install"
