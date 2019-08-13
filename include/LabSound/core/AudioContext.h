@@ -34,14 +34,13 @@ class ContextRenderLock;
 
 class AudioContext
 {
-
     friend class ContextGraphLock;
     friend class ContextRenderLock;
 
 public:
 
     // Somewhat arbitrary and could be increased if necessary
-    static const uint32_t maxNumberOfChannels;
+    static const size_t maxNumberOfChannels;
 
     // Debugging/Sanity Checking
     std::string m_graphLocker;
@@ -62,7 +61,7 @@ public:
 
     bool isOfflineContext();
 
-    size_t currentSampleFrame() const;
+    uint64_t currentSampleFrame() const;
 
     double currentTime() const;
 
@@ -117,9 +116,6 @@ private:
     bool m_isOfflineContext = false;
     bool m_automaticPullNodesNeedUpdating = false; // keeps track if m_automaticPullNodes is modified.
 
-    // Number of SampledAudioNode that are active (playing).
-    std::atomic<int> m_activeSourceCount;
-
     void uninitialize();
 
     void handleAutomaticSources();
@@ -153,7 +149,7 @@ private:
         uint32_t destIndex;
         uint32_t srcIndex;
         float duration = 0.1f;
-        
+
         PendingConnection(
             std::shared_ptr<AudioNode> destination,
             std::shared_ptr<AudioNode> source,

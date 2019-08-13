@@ -15,7 +15,7 @@ This is a part of [Node3D](https://github.com/node-3d) project.
 This dependency package is distributing **LabSound**
 binaries through **NPM** for **Node.js** addons.
 
-* Platforms: win x32/x64, linux x64, mac x64.
+* Platforms (x64): Windows, Linux, OSX.
 * Library: LabSound audio.
 * Linking: static lib-type.
 
@@ -26,8 +26,8 @@ binaries through **NPM** for **Node.js** addons.
 
 ```javascript
 	'variables': {
-		'labsound_include' : '<!(node -e "require(\'deps-labsound-raub\').include()")',
-		'labsound_bin'     : '<!(node -e "require(\'deps-labsound-raub\').bin()")',
+		'labsound_include' : '<!(node -p "require(\'deps-labsound-raub\').include")',
+		'labsound_bin'     : '<!(node -p "require(\'deps-labsound-raub\').bin")',
 	},
 	...
 	'targets': [

@@ -7,33 +7,39 @@
 
 #include "LabSound/core/AudioParam.h"
 #include "LabSound/core/AudioScheduledSourceNode.h"
+#include "LabSound/core/Constants.h"
 #include "LabSound/core/WaveTable.h"
-#include "LabSound/core/Synthesis.h"
 
 namespace lab {
 
-class AudioContext;
 class AudioBus;
+class AudioContext;
+class AudioSetting;
 
+// params: frequency, detune
+// settings: type
+//
 class OscillatorNode : public AudioScheduledSourceNode
 {
-    
+
 public:
-    
-    OscillatorNode(const float sampleRate);
+
+    OscillatorNode(const float sampleRate = LABSOUND_DEFAULT_SAMPLERATE);
     virtual ~OscillatorNode();
-    
+
     // AudioNode
     virtual void process(ContextRenderLock&, size_t framesToProcess) override;
     virtual void reset(ContextRenderLock&) override;
 
-    OscillatorType type() const { return m_type; }
+    OscillatorType type() const;
     void setType(OscillatorType type);
 
     std::shared_ptr<AudioParam> frequency() { return m_frequency; }
     std::shared_ptr<AudioParam> detune() { return m_detune; }
 
+
 private:
+    void _setType(OscillatorType type);
 
     float m_sampleRate;
 
@@ -45,8 +51,8 @@ private:
     virtual bool propagatesSilence(ContextRenderLock & r) const override;
 
     // One of the waveform types defined in the enum.
-    OscillatorType m_type;
-   
+    std::shared_ptr<AudioSetting> m_type;
+
     // Frequency value in Hertz.
     std::shared_ptr<AudioParam> m_frequency;
 
@@ -62,7 +68,7 @@ private:
     // Stores sample-accurate values calculated according to frequency and detune.
     AudioFloatArray m_phaseIncrements;
     AudioFloatArray m_detuneValues;
-    
+
     std::shared_ptr<WaveTable> m_waveTable;
 
     // Cache the wave tables for different waveform types, except CUSTOM.

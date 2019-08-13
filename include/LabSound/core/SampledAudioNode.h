@@ -17,9 +17,12 @@ class AudioContext;
 class AudioBus;
 
 // This should  be used for short sounds which require a high degree of scheduling flexibility (can playback in rhythmically perfect ways).
+//
+// params: gain, playbackRate
+// settings: loop
+//
 class SampledAudioNode final : public AudioScheduledSourceNode
 {
-
 public:
 
     SampledAudioNode();
@@ -34,7 +37,7 @@ public:
 
     // numberOfChannels() returns the number of output channels. This value equals the number of channels from the buffer.
     // If a new buffer is set with a different number of channels, then this value will dynamically change.
-    unsigned numberOfChannels(ContextRenderLock & r);
+    size_t numberOfChannels(ContextRenderLock & r);
 
     // Play-state
     void startGrain(double when, double grainOffset);
@@ -42,17 +45,18 @@ public:
 
     float duration() const;
 
-    bool loop() const { return m_isLooping; }
-    void setLoop(bool looping) { m_isLooping = looping; }
+    bool loop() const;
+    void setLoop(bool loop);
 
     // Loop times in seconds.
-    double loopStart() const { return m_loopStart; }
-    double loopEnd() const { return m_loopEnd; }
-    void setLoopStart(double loopStart) { m_loopStart = loopStart; }
-    void setLoopEnd(double loopEnd) { m_loopEnd = loopEnd; }
+    double loopStart() const;
+    double loopEnd() const;
+    void setLoopStart(double loopStart);
+    void setLoopEnd(double loopEnd);
 
     std::shared_ptr<AudioParam> gain() { return m_gain; }
     std::shared_ptr<AudioParam> playbackRate() { return m_playbackRate; }
+    std::shared_ptr<AudioParam> detune() { return m_detune; }
 
     // If a panner node is set, then we can incorporate doppler shift into the playback pitch rate.
     void setPannerNode(PannerNode*);
@@ -67,29 +71,30 @@ private:
     virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
 
     // Returns true on success.
-    bool renderFromBuffer(ContextRenderLock &, AudioBus *, unsigned destinationFrameOffset, size_t numberOfFrames);
+    bool renderFromBuffer(ContextRenderLock &, AudioBus *, size_t destinationFrameOffset, size_t numberOfFrames);
 
     // Render silence starting from "index" frame in AudioBus.
-    bool renderSilenceAndFinishIfNotLooping(ContextRenderLock & r, AudioBus *, unsigned index, size_t framesToProcess);
+    bool renderSilenceAndFinishIfNotLooping(ContextRenderLock & r, AudioBus *, size_t index, size_t framesToProcess);
 
     // m_buffer holds the sample data which this node outputs.
     std::shared_ptr<AudioBus> m_sourceBus;
 
-    // Used for the "gain" and "playbackRate" attributes.
+    // Exposed attributes
     std::shared_ptr<AudioParam> m_gain;
     std::shared_ptr<AudioParam> m_playbackRate;
+    std::shared_ptr<AudioParam> m_detune;
 
     // If m_isLooping is false, then this node will be done playing and become inactive after it reaches the end of the sample data in the buffer.
     // If true, it will wrap around to the start of the buffer each time it reaches the end.
-    bool m_isLooping{ false };
+    std::shared_ptr<AudioSetting> m_isLooping;
 
     bool m_startRequested{ false };
     double m_requestWhen{ 0 };
     double m_requestGrainOffset{ 0 };
     double m_requestGrainDuration{ 0 };
 
-    double m_loopStart{ 0 };
-    double m_loopEnd{ 0 };
+    std::shared_ptr<AudioSetting> m_loopStart;
+    std::shared_ptr<AudioSetting> m_loopEnd;
 
     // m_virtualReadIndex is a sample-frame index into our buffer representing the current playback position.
     // Since it's floating-point, it has sub-sample accuracy.

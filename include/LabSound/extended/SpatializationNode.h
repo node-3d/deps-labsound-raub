@@ -22,8 +22,8 @@ namespace lab {
         
         Occluder(float x, float y, float z, float radius)
         : x(x), y(y), z(z)
-        , outerRadius(radius)
         , innerRadius(radius * 0.75f)
+        , outerRadius(radius)
         , maxAttenuation(0) { }
         
         Occluder(const Occluder& rhs)
@@ -60,7 +60,7 @@ namespace lab {
     {
     public:
 
-        SpatializationNode(float sampleRate);
+        SpatializationNode(float sampleRate = LABSOUND_DEFAULT_SAMPLERATE);
         virtual ~SpatializationNode() = default;
 
         void setOccluders(OccludersPtr ptr);
