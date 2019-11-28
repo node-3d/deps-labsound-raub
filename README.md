@@ -7,7 +7,7 @@ This is a part of [Node3D](https://github.com/node-3d) project.
 [![Build Status](https://api.travis-ci.com/node-3d/deps-labsound-raub.svg?branch=master)](https://travis-ci.com/node-3d/deps-labsound-raub)
 [![CodeFactor](https://www.codefactor.io/repository/github/node-3d/deps-labsound-raub/badge)](https://www.codefactor.io/repository/github/node-3d/deps-labsound-raub)
 
-> npm i -s deps-labsound-raub
+> npm i deps-labsound-raub
 
 
 ## Synopsis
@@ -22,32 +22,100 @@ binaries through **NPM** for **Node.js** addons.
 
 ## Usage
 
-**binding.gyp**
+### Example binding.gyp
+
+As in [webaudio-raub](https://github.com/node-3d/webaudio-raub/tree/master/src) Node.js addon.
 
 ```javascript
+{
 	'variables': {
-		'labsound_include' : '<!(node -p "require(\'deps-labsound-raub\').include")',
-		'labsound_bin'     : '<!(node -p "require(\'deps-labsound-raub\').bin")',
+		'bin'        : '<!(node -p "require(\'addon-tools-raub\').bin")',
+		'ls_include' : '<!(node -p "require(\'deps-labsound-raub\').include")',
+		'ls_bin'     : '<!(node -p "require(\'deps-labsound-raub\').bin")',
 	},
-	...
 	'targets': [
 		{
-			'target_name': '...',
-			
-			'include_dirs': [
-				'<(labsound_include)',
-				...
+			'target_name': 'webaudio',
+			'sources': [
+				'cpp/bindings.cpp',
+				'cpp/common.cpp',
+				'cpp/analyser-node.cpp',
+				'cpp/audio-buffer.cpp',
+				'cpp/audio-buffer-source-node.cpp',
+				'cpp/audio-context.cpp',
+				'cpp/audio-destination-node.cpp',
+				'cpp/audio-listener.cpp',
+				'cpp/audio-node.cpp',
+				'cpp/audio-param.cpp',
+				'cpp/audio-scheduled-source-node.cpp',
+				'cpp/base-audio-context.cpp',
+				'cpp/biquad-filter-node.cpp',
+				'cpp/convolver-node.cpp',
+				'cpp/delay-node.cpp',
+				'cpp/gain-node.cpp',
+				'cpp/oscillator-node.cpp',
+				'cpp/panner-node.cpp',
 			],
-			
-			'library_dirs': ['<(labsound_bin)'],
-			'libraries'    : ['-llabsound'],
-			
+			'include_dirs': [
+				'<(ls_include)',
+				'<!@(node -p "require(\'addon-tools-raub\').include")',
+			],
+			'cflags!': ['-fno-exceptions'],
+			'cflags_cc!': ['-fno-exceptions'],
+			'library_dirs': [ '<(ls_bin)' ],
+			'libraries': [ '-llabsound' ],
 			'conditions': [
-				['OS=="win"', {
-					'libraries' : [ '-lwinmm', '-lole32', '-luser32', '-lgdi32' ],
-				}],
+				
+				[
+					'OS=="linux"',
+					{
+						'libraries': [
+							"-Wl,-rpath,'$$ORIGIN'",
+							"-Wl,-rpath,'$$ORIGIN/../node_modules/deps-labsound-raub/<(bin)'",
+							"-Wl,-rpath,'$$ORIGIN/../../deps-labsound-raub/<(bin)'",
+						],
+						'defines': ['__linux__'],
+					}
+				],
+				
+				[
+					'OS=="mac"',
+					{
+						'libraries': [
+							'-Wl,-rpath,@loader_path',
+							'-Wl,-rpath,@loader_path/../node_modules/deps-labsound-raub/<(bin)',
+							'-Wl,-rpath,@loader_path/../../deps-labsound-raub/<(bin)',
+						],
+						'defines': ['__APPLE__'],
+					}
+				],
+				
+				[
+					'OS=="win"',
+					{
+						'libraries' : [ '-lwinmm', '-lole32', '-luser32', '-lgdi32' ],
+						'defines' : [
+							'WIN32_LEAN_AND_MEAN',
+							'VC_EXTRALEAN',
+							'_WIN32',
+						],
+						'msvs_settings' : {
+							'VCCLCompilerTool' : {
+								'AdditionalOptions' : [
+									'/GL', '/GF', '/EHsc', '/GS', '/Gy', '/GR-',
+								]
+							},
+							'VCLinkerTool' : {
+								'AdditionalOptions' : ['/RELEASE','/OPT:REF','/OPT:ICF','/LTCG'],
+							},
+						},
+					},
+				],
+				
 			],
 		},
+	]
+}
 ```
 
 LabSound C++ interface is available as documented (if) in the

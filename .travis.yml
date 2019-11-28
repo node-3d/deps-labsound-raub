@@ -2,7 +2,7 @@ matrix:
   include:
     - name: "Linux Test"
       language: node_js
-      node_js: "10.16.1"
+      node_js: "12.13.0"
       os: linux
       if: NOT commit_message =~ /^:hammer:/
       dist: xenial
@@ -12,7 +12,7 @@ matrix:
         - npm ci
     - name: "OSX Test"
       language: node_js
-      node_js: "10.16.1"
+      node_js: "12.13.0"
       os: osx
       if: NOT commit_message =~ /^:hammer:/
       install:
@@ -35,14 +35,14 @@ matrix:
         - if [[ ! -d /home/travis/qt-linux/Qt ]]; then
             chmod +x ./install-qt.sh;
             chmod +x ./extract-qt-installer.sh;
-            export QT_CI_PACKAGES=qt.qt5.5111.gcc_64;
-            ./install-qt.sh 5.11.1 /home/travis/qt-linux;
+            export QT_CI_PACKAGES=qt.qt5.5130.gcc_64;
+            ./install-qt.sh 5.13.0 /home/travis/qt-linux;
           fi;
         - ls /home/travis/qt-linux/Qt
-        - export PATH=/home/travis/qt-linux/Qt/5.11.1/gcc_64/bin:$PATH
+        - export PATH=/home/travis/qt-linux/Qt/5.13.0/gcc_64/bin:$PATH
       script:
         - chmod +x src/unpack.sh && src/unpack.sh
-        - qmake -spec linux-g++-64 "INCLUDEPATH+=/home/travis/qt-linux/Qt/5.11.1/gcc_64/include" src/LabSound-master/qmake/labsound.pro
+        - qmake -spec linux-g++-64 "INCLUDEPATH+=/home/travis/qt-linux/Qt/5.13.0/gcc_64/include" src/LabSound-master/qmake/labsound.pro
         - make
     - name: "OSX Build"
       os: osx
@@ -60,13 +60,13 @@ matrix:
         - if [[ ! -d /Users/travis/qt-osx/Qt ]]; then
             chmod +x ./install-qt.sh;
             chmod +x ./extract-qt-installer.sh;
-            export QT_CI_PACKAGES=qt.qt5.5111.clang_64;
-            ./install-qt.sh 5.11.1 /Users/travis/qt-osx;
+            export QT_CI_PACKAGES=qt.qt5.5130.clang_64;
+            ./install-qt.sh 5.13.0 /Users/travis/qt-osx;
           fi;
-        - export PATH=/Users/travis/qt-osx/Qt/5.11.1/clang_64/bin:$PATH
+        - export PATH=/Users/travis/qt-osx/Qt/5.13.0/clang_64/bin:$PATH
       script:
         - chmod +x src/unpack.sh && src/unpack.sh
-        - qmake -spec macx-clang "QMAKE_CXXFLAGS+=-ObjC++" "QMAKE_LFLAGS_SONAME=-Wl,-install_name,@rpath/" "INCLUDEPATH+=/Users/travis/qt-osx/Qt/5.11.1/clang_64/include" src/LabSound-master/qmake/labsound.pro
+        - qmake -spec macx-clang "QMAKE_CXXFLAGS+=-ObjC++" "QMAKE_LFLAGS_SONAME=-Wl,-install_name,@rpath/" "INCLUDEPATH+=/Users/travis/qt-osx/Qt/5.13.0/clang_64/include" src/LabSound-master/qmake/labsound.pro
         - make
 
 
