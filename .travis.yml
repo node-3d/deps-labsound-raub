@@ -30,6 +30,7 @@ matrix:
         - chmod +x src/unpack.sh && src/unpack.sh
       script:
         - chmod +x src/linux-labsound.sh && src/linux-labsound.sh
+        - ls src/LabSound-master/dist/lib
     - name: "OSX Build"
       os: osx
       if: commit_message =~ /^:hammer:/
@@ -42,6 +43,7 @@ matrix:
         - chmod +x src/unpack.sh && src/unpack.sh
       script:
         - chmod +x src/osx-labsound.sh && src/osx-labsound.sh
+        - ls src/LabSound-master/dist/lib
 
 
 deploy:
@@ -55,5 +57,7 @@ deploy:
   skip_cleanup: true
   overwrite: true
   draft: true
+  prerelease: false
+  tag_name: "$SYSNAME"
   file_glob: true
   file: src/LabSound-master/dist/lib/*
