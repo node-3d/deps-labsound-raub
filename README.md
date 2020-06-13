@@ -16,7 +16,7 @@ This dependency package is distributing **LabSound**
 binaries through **NPM** for **Node.js** addons.
 
 * Platforms (x64): Windows, Linux, OSX.
-* Library: LabSound audio.
+* Libraries: LabSound, libnyquist, libopus, libwavpack.
 * Linking: static lib-type.
 
 
@@ -140,9 +140,6 @@ LabSound is legally used under the 2 Clause BSD license.
 LabSound licensing information (a COPY) is given in a [separate file](/LABSOUND_BSD),
 which also can be found on
 [LabSound's official repository](https://github.com/LabSound/LabSound/blob/master/LICENSE).
-
-Binaries for all current platforms are built through Qt's QMAKE system **WITHOUT** any use of
-Qt-libraries. The `.pro` files for QMAKE build are being contributed to the LabSound repository.
 
 No changes to the original content of any LabSound source file were made. No claims are made that
 any audio algorithms are changed/invented within this repository.
