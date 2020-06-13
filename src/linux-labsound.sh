@@ -11,6 +11,8 @@ echo 'LABSOUND Build Started'
 		
 		export CMAKE_LIBRARY_PATH="/home/travis/build/node-3d/deps-labsound-raub/src"
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/travis/build/node-3d/deps-labsound-raub/src
+		echo $LD_LIBRARY_PATH
+		echo $CMAKE_LIBRARY_PATH
 		
 		cmake \
 			-DLABSOUND_ASOUND=1 \
