@@ -9,7 +9,6 @@ echo 'LABSOUND Build Started'
 	(
 		cd build
 		cmake -G "Xcode" \
-			-DCMAKE_CXX_FLAGS="-w" \
 			-DBUILD_EXAMPLE=FALSE \
 			-DCMAKE_INSTALL_PREFIX=../dist \
 			..

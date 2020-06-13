@@ -9,7 +9,6 @@ echo 'LABSOUND Build Started'
 	(
 		cd build
 		cmake \
-			-DCMAKE_CXX_FLAGS="-w" \
 			-CMAKE_LIBRARY_PATH=../.. \
 			-DLABSOUND_ASOUND=1 \
 			-DBUILD_EXAMPLE=FALSE \

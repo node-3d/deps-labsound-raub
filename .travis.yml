@@ -30,8 +30,6 @@ matrix:
         - chmod +x src/unpack.sh && src/unpack.sh
       script:
         - chmod +x src/linux-labsound.sh && src/linux-labsound.sh
-        - ls src/LabSound-master/build
-        - ls src/LabSound-master/dist
     - name: "OSX Build"
       os: osx
       if: commit_message =~ /^:hammer:/
@@ -44,8 +42,6 @@ matrix:
         - chmod +x src/unpack.sh && src/unpack.sh
       script:
         - chmod +x src/osx-labsound.sh && src/osx-labsound.sh
-        - ls src/LabSound-master/build
-        - ls src/LabSound-master/dist
 
 
 deploy:
