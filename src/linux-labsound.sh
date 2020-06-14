@@ -4,7 +4,9 @@ echo 'LABSOUND Build Started'
 	
 	cd src/LabSound-master
 	rm -rf build
+	rm -rf dist
 	mkdir -p build
+	mkdir -p dist
 	
 	(
 		cd build
@@ -17,7 +19,8 @@ echo 'LABSOUND Build Started'
 		cmake --build . --target LabSound --config Release
 	)
 	
-	ls build
+	ls build/bin
+	cp build/bin/* build/dist
 	
 )
 

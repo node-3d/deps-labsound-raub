@@ -4,7 +4,9 @@ echo 'LABSOUND Build Started'
 	
 	cd src/LabSound-master
 	rm -rf build
+	rm -rf dist
 	mkdir -p build
+	mkdir -p dist
 	
 	(
 		cd build
@@ -17,6 +19,7 @@ echo 'LABSOUND Build Started'
 	)
 	
 	ls build
+	cp build/bin/Release* build/dist
 	
 )
 
