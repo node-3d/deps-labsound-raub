@@ -8,11 +8,12 @@ echo 'LABSOUND Build Started'
 	
 	(
 		cd build
-		cmake \
-			-DCMAKE_INSTALL_PREFIX=../dist \
-			-DBUILD_EXAMPLE=FALSE ..
+		cmake -DBUILD_EXAMPLE=FALSE ..
 		
-		cmake --build . --target install --config Release
+		cmake --build . --target libopus --config Release
+		cmake --build . --target libwavpack --config Release
+		cmake --build . --target libnyquist --config Release
+		cmake --build . --target LabSound --config Release
 	)
 	
 	ls build

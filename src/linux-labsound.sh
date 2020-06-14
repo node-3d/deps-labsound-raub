@@ -9,17 +9,12 @@ echo 'LABSOUND Build Started'
 	(
 		cd build
 		
-		export CMAKE_LIBRARY_PATH="/home/travis/build/node-3d/deps-labsound-raub/src"
-		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/travis/build/node-3d/deps-labsound-raub/src
-		echo $LD_LIBRARY_PATH
-		echo $CMAKE_LIBRARY_PATH
+		cmake -DLABSOUND_ASOUND=1 -DBUILD_EXAMPLE=FALSE ..
 		
-		cmake \
-			-DLABSOUND_ASOUND=1 \
-			-DCMAKE_INSTALL_PREFIX=../dist \
-			-DBUILD_EXAMPLE=FALSE ..
-		
-		cmake --build . --target install --config Release
+		cmake --build . --target libopus --config Release
+		cmake --build . --target libwavpack --config Release
+		cmake --build . --target libnyquist --config Release
+		cmake --build . --target LabSound --config Release
 	)
 	
 	ls build
