@@ -30,14 +30,6 @@ matrix:
         - chmod +x src/unpack.sh && src/unpack.sh
       script:
         - chmod +x src/linux-labsound.sh && src/linux-labsound.sh
-        - echo ==============src/LabSound-master
-        - ls src/LabSound-master
-        - echo ==============src/LabSound-master/build
-        - ls src/LabSound-master/build
-        - echo ==============src/LabSound-master/build/bin
-        - ls src/LabSound-master/build/bin
-        - echo ==============src/LabSound-master/build/bin/Release
-        - ls src/LabSound-master/build/bin/Release
     - name: "OSX Build"
       os: osx
       if: commit_message =~ /^:hammer:/

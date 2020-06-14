@@ -18,8 +18,8 @@ echo 'LABSOUND Build Started'
 		cmake --build . --target LabSound --config Release
 	)
 	
-	ls build/bin
-	cp build/bin/* build/dist
+	ls build/bin/Release
+	cp build/bin/Release* build/dist
 	cp build/bin/Release/LabSound.framework/Versions/A/LabSound build/dist
 	
 )
