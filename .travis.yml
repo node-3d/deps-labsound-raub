@@ -58,4 +58,4 @@ deploy:
   prerelease: false
   tag_name: "$SYSNAME"
   file_glob: true
-  file: src/LabSound-master/dist/*
+  file: src/LabSound-master/build/dist/*
