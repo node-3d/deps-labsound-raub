@@ -18,8 +18,11 @@ echo 'LABSOUND Build Started'
 	)
 	
 	ls build/bin/Release
-	cp build/bin/Release* build/dist
+	cp build/bin/Release/liblibnyquist.a  build/dist
+	cp build/bin/Release/liblibopus.a  build/dist
+	cp build/bin/Release/liblibwavpack.a  build/dist
 	cp build/bin/Release/LabSound.framework/Versions/A/LabSound build/dist
+	mv build/dist/LabSound build/dist/LabSound.a
 	
 )
 
