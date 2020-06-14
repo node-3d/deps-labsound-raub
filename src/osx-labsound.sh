@@ -9,9 +9,8 @@ echo 'LABSOUND Build Started'
 	(
 		cd build
 		cmake -G "Xcode" \
-			-DBUILD_EXAMPLE=FALSE \
 			-DCMAKE_INSTALL_PREFIX=../dist \
-			..
+			-DBUILD_EXAMPLE=FALSE ..
 		
 		cmake --build . --target install --config Release
 	)

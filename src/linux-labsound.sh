@@ -16,9 +16,8 @@ echo 'LABSOUND Build Started'
 		
 		cmake \
 			-DLABSOUND_ASOUND=1 \
-			-DBUILD_EXAMPLE=FALSE \
 			-DCMAKE_INSTALL_PREFIX=../dist \
-			..
+			-DBUILD_EXAMPLE=FALSE ..
 		
 		cmake --build . --target install --config Release
 	)
