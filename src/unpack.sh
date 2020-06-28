@@ -4,6 +4,7 @@ echo 'Unpack Started'
 	
 	cd src
 	
+	rm -rf LabSound-master
 	unzip -qq LabSound-master.zip -d .
 	unzip -qq alsa.zip -d LabSound-master/include
 	
