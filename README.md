@@ -38,23 +38,6 @@ As in [webaudio-raub](https://github.com/node-3d/webaudio-raub/tree/master/src) 
 			'target_name': 'webaudio',
 			'sources': [
 				'cpp/bindings.cpp',
-				'cpp/common.cpp',
-				'cpp/analyser-node.cpp',
-				'cpp/audio-buffer.cpp',
-				'cpp/audio-buffer-source-node.cpp',
-				'cpp/audio-context.cpp',
-				'cpp/audio-destination-node.cpp',
-				'cpp/audio-listener.cpp',
-				'cpp/audio-node.cpp',
-				'cpp/audio-param.cpp',
-				'cpp/audio-scheduled-source-node.cpp',
-				'cpp/base-audio-context.cpp',
-				'cpp/biquad-filter-node.cpp',
-				'cpp/convolver-node.cpp',
-				'cpp/delay-node.cpp',
-				'cpp/gain-node.cpp',
-				'cpp/oscillator-node.cpp',
-				'cpp/panner-node.cpp',
 			],
 			'include_dirs': [
 				'<(ls_include)',
@@ -93,7 +76,10 @@ As in [webaudio-raub](https://github.com/node-3d/webaudio-raub/tree/master/src) 
 				[
 					'OS=="win"',
 					{
-						'libraries' : [ '-lwinmm', '-lole32', '-luser32', '-lgdi32' ],
+						'libraries' : [
+							'-lwinmm', '-lole32', '-luser32', '-lgdi32',
+							'libnyquist', 'libopus', 'libwavpack',
+						],
 						'defines' : [
 							'WIN32_LEAN_AND_MEAN',
 							'VC_EXTRALEAN',
