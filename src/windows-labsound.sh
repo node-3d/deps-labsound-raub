@@ -9,7 +9,7 @@ echo 'LABSOUND Build Started'
 	
 	(
 		cd build
-		cmake -DBUILD_EXAMPLE=FALSE ..
+		cmake -A x64 -DBUILD_EXAMPLE=FALSE ..
 		
 		cmake --build . --target libopus --config Release
 		cmake --build . --target libwavpack --config Release

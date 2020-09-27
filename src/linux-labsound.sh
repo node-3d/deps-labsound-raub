@@ -12,6 +12,7 @@ echo 'LABSOUND Build Started'
 		
 		cmake \
 			-DCMAKE_BUILD_TYPE=RELEASE \
+			-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true \
 			-DLABSOUND_ASOUND=1 -DBUILD_EXAMPLE=FALSE ..
 		
 		cmake --build . --target libopus --config Release
