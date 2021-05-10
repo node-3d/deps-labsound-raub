@@ -8,7 +8,10 @@ tar -xf LabSound-1.0.1.zip
 rd /s /q "build"
 mkdir build
 
-cd LabSound-1.0.1/build
+cd LabSound-1.0.1
+rd /s /q "build"
+mkdir build
+cd build
 
 cmake -A x64 -DBUILD_EXAMPLE=FALSE ..
 
