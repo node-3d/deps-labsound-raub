@@ -3,8 +3,6 @@
 This is a part of [Node3D](https://github.com/node-3d) project.
 
 [![NPM](https://nodei.co/npm/deps-labsound-raub.png?compact=true)](https://www.npmjs.com/package/deps-labsound-raub)
-
-[![Build Status](https://api.travis-ci.com/node-3d/deps-labsound-raub.svg?branch=master)](https://travis-ci.com/node-3d/deps-labsound-raub)
 [![CodeFactor](https://www.codefactor.io/repository/github/node-3d/deps-labsound-raub/badge)](https://www.codefactor.io/repository/github/node-3d/deps-labsound-raub)
 
 > npm i deps-labsound-raub
@@ -16,7 +14,7 @@ This dependency package is distributing **LabSound**
 binaries through **NPM** for **Node.js** addons.
 
 * Platforms (x64): Windows, Linux, OSX.
-* Libraries: LabSound, libnyquist, libopus, libwavpack.
+* Libraries: LabSound, libnyquist, libwavpack.
 * Linking: static lib-type.
 
 
@@ -46,7 +44,7 @@ As in [webaudio-raub](https://github.com/node-3d/webaudio-raub/tree/master/src) 
 			'cflags!': ['-fno-exceptions'],
 			'cflags_cc!': ['-fno-exceptions'],
 			'library_dirs': [ '<(ls_bin)' ],
-			'libraries': [ '-llabsound' ],
+			'libraries': [ '-llabsound', '-libnyquist', '-libwavpack' ],
 			'conditions': [
 				
 				[
@@ -78,7 +76,6 @@ As in [webaudio-raub](https://github.com/node-3d/webaudio-raub/tree/master/src) 
 					{
 						'libraries' : [
 							'-lwinmm', '-lole32', '-luser32', '-lgdi32',
-							'libnyquist', 'libopus', 'libwavpack',
 						],
 						'defines' : [
 							'WIN32_LEAN_AND_MEAN',
