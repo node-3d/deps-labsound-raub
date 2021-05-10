@@ -22,14 +22,14 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -qq xorg-dev
-          chmod +x src/linux-glfw.sh && src/linux-glfw.sh
+          chmod +x src/linux.sh && src/linux.sh
       - name: Store Binaries
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
-          tag_name: linux-glfw-${{ github.run }}-${{ github.sha }}
+          tag_name: linux-${{ github.run }}-${{ github.sha }}
           name: LabSound Linux
           body: Linux LabSound binaries at ${{ github.sha }}
           files: src/build/*

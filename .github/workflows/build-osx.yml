@@ -1,4 +1,4 @@
-name: Build OSX GLFW
+name: Build OSX LabSound
 
 on:
   workflow_dispatch
@@ -20,14 +20,14 @@ jobs:
 
       - name: Build
         run: |
-          chmod +x src/osx-glfw.sh && src/osx-glfw.sh
+          chmod +x src/osx.sh && src/osx.sh
       - name: Store Binaries
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
-          tag_name: osx-glfw-${{ github.run }}-${{ github.sha }}
-          name: GLFW OSX
-          body: OSX GLFW binaries at ${{ github.sha }}
+          tag_name: osx-${{ github.run }}-${{ github.sha }}
+          name: LabSound OSX
+          body: OSX LabSound binaries at ${{ github.sha }}
           files: src/build/*

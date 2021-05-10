@@ -1,4 +1,4 @@
-name: Build Windows GLFW
+name: Build Windows LabSound
 
 on:
   workflow_dispatch
@@ -24,14 +24,14 @@ jobs:
       - name: Build
         shell: cmd
         run: |
-          src\windows-glfw.cmd
+          src\windows.cmd
       - name: Store Binaries
         uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
-          tag_name: windows-glfw-${{ github.run }}-${{ github.sha }}
-          name: GLFW Windows
-          body: Windows GLFW binaries at ${{ github.sha }}
+          tag_name: windows-${{ github.run }}-${{ github.sha }}
+          name: LabSound Windows
+          body: Windows LabSound binaries at ${{ github.sha }}
           files: src/build/*

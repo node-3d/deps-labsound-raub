@@ -17,7 +17,6 @@ echo 'LABSOUND Build Started'
 		cd LabSound-1.0.1
 		mkdir -p build
 		cd build
-		ls
 		
 		cmake \
 			-DCMAKE_BUILD_TYPE=RELEASE \
@@ -30,7 +29,6 @@ echo 'LABSOUND Build Started'
 		cmake --build . --target LabSound --config Release
 	)
 	
-	ls LabSound-1.0.1/build/bin
 	cp LabSound-1.0.1/build/bin/* build
 	
 )
