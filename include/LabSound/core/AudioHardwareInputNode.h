@@ -17,17 +17,20 @@ class AudioHardwareInputNode : public AudioNode
     // As an audio source, we will never propagate silence.
     virtual bool propagatesSilence(ContextRenderLock & r) const override { return false; }
     AudioSourceProvider * m_audioSourceProvider;
-    size_t m_sourceNumberOfChannels{0};
+    int m_sourceNumberOfChannels{0};
 
 public:
-    AudioHardwareInputNode(AudioSourceProvider * provider_from_context);
+    AudioHardwareInputNode(AudioContext & ac, AudioSourceProvider * provider_from_context);
     virtual ~AudioHardwareInputNode();
+
+    static const char* static_name() { return "AudioHardwareDevice"; }
+    virtual const char* name() const override { return static_name(); }
 
     virtual double tailTime(ContextRenderLock & r) const override { return 0; }
     virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
 
     // AudioNode interface
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 };
 

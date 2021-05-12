@@ -16,8 +16,11 @@ class WaveShaperNode : public AudioBasicProcessorNode
     WaveShaperProcessor * waveShaperProcessor();
 
 public:
-    WaveShaperNode();
+    WaveShaperNode(AudioContext & ac);
     virtual ~WaveShaperNode() = default;
+
+    static const char* static_name() { return "WaveShaper"; }
+    virtual const char* name() const override { return static_name(); }
 
     // setCurve will take ownership of curve
     void setCurve(std::vector<float> && curve);

@@ -22,10 +22,13 @@ class SpectralMonitorNode : public AudioBasicInspectorNode
     SpectralMonitorNodeInternal * internalNode = nullptr;
 
 public:
-    SpectralMonitorNode();
+    SpectralMonitorNode(AudioContext & ac);
     virtual ~SpectralMonitorNode();
 
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    static const char* static_name() { return "SpectralMonitor"; }
+    virtual const char* name() const override { return static_name(); }
+
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 
     void spectralMag(std::vector<float> & result);

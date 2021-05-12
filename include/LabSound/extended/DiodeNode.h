@@ -29,7 +29,12 @@ class DiodeNode : public WaveShaperNode
     std::shared_ptr<AudioSetting> _vl;  // curve shape control
 
 public:
-    DiodeNode();
+    DiodeNode(AudioContext &);
+    virtual ~DiodeNode() = default;
+
+    static const char* static_name() { return "Diode"; }
+    virtual const char* name() const override { return static_name(); }
+
     void setDistortion(float distortion = 1.0);
 
     std::shared_ptr<AudioSetting> distortion() const { return _distortion; };

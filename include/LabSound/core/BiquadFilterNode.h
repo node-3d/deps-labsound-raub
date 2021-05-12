@@ -11,17 +11,19 @@ namespace lab
 {
 
 class AudioParam;
-class BiquadProcessor;
+class Biquad;
 
 class BiquadFilterNode : public AudioBasicProcessorNode
 {
-
-    BiquadProcessor * biquadProcessor();
-    BiquadProcessor * biquadProcessor() const;
-    std::shared_ptr<AudioSetting> m_type;
+    class BiquadFilterNodeInternal;
+    BiquadFilterNodeInternal * biquad_impl;
 
 public:
-    BiquadFilterNode();
+    BiquadFilterNode(AudioContext& ac);
+    virtual ~BiquadFilterNode();
+
+    static const char* static_name() { return "BiquadFilter"; }
+    virtual const char* name() const override { return static_name(); }
 
     FilterType type() const;
     void setType(FilterType type);

@@ -23,15 +23,17 @@ class Spatializer;
 class StereoPannerNode : public AudioNode
 {
 public:
-    StereoPannerNode(const float sampleRate = LABSOUND_DEFAULT_SAMPLERATE);
-
+    StereoPannerNode(AudioContext& ac);
     virtual ~StereoPannerNode();
+
+    static const char* static_name() { return "StereoPanner"; }
+    virtual const char* name() const override { return static_name(); }
 
     std::shared_ptr<AudioParam> pan() { return m_pan; }
 
 private:
     // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 
     virtual void initialize() override;

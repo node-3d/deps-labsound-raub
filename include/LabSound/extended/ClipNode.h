@@ -27,8 +27,11 @@ public:
         _Count = 2
     };
 
-    ClipNode();
+    ClipNode(AudioContext & ac);
     virtual ~ClipNode();
+
+    static const char* static_name() { return "Clip"; }
+    virtual const char* name() const override { return static_name(); }
 
     void setMode(Mode m);
 

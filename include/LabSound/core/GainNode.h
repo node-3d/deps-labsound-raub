@@ -24,11 +24,14 @@ class GainNode : public AudioNode
 {
 
 public:
-    GainNode();
+    GainNode(AudioContext& ac);
     virtual ~GainNode();
 
+    static const char* static_name() { return "GainNode"; }
+    virtual const char* name() const override { return static_name(); }
+
     // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 
     // Called in the main thread when the number of channels for the input may have changed.

@@ -24,7 +24,7 @@ class Subgraph
 public:
     std::shared_ptr<GainNode> output;
     std::shared_ptr<GainNode> input;
-    virtual void BuildSubgraph(std::unique_ptr<AudioContext> & ac) = 0;
+    virtual void BuildSubgraph(AudioContext & ac) = 0;
     virtual ~Subgraph() {}
 };
 
@@ -43,14 +43,14 @@ class PingPongDelayNode : public Subgraph
     std::shared_ptr<ChannelSplitterNode> splitter;
 
 public:
-    PingPongDelayNode(float sampleRate, float tempo);
+    PingPongDelayNode(AudioContext &, float tempo);
 
     void SetTempo(float t);
     void SetFeedback(float f);
     void SetLevel(float f);
     void SetDelayIndex(TempoSync value);
 
-    virtual void BuildSubgraph(std::unique_ptr<AudioContext> & ac) override;
+    virtual void BuildSubgraph(AudioContext & ac) override;
 };
 }
 

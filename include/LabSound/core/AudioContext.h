@@ -9,7 +9,6 @@
 #include "LabSound/core/AudioDevice.h"
 #include "LabSound/core/AudioHardwareDeviceNode.h"
 #include "LabSound/core/AudioScheduledSourceNode.h"
-#include "LabSound/core/ConcurrentQueue.h"
 
 #include <atomic>
 #include <condition_variable>
@@ -75,18 +74,23 @@ public:
 
     // Called right before handlePostRenderTasks() to handle nodes which need to be pulled even when they are not connected to anything.
     // Only an AudioHardwareDeviceNode should call this.
-    void processAutomaticPullNodes(ContextRenderLock &, size_t framesToProcess);
+    void processAutomaticPullNodes(ContextRenderLock &, int framesToProcess);
 
-    void connect(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source, uint32_t destIdx = 0, uint32_t srcIdx = 0);
-    void disconnect(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source, uint32_t destIdx = 0, uint32_t srcidx = 0);
+    void connect(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source, int destIdx = 0, int srcIdx = 0);
+    void disconnect(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source, int destIdx = 0, int srcidx = 0);
+    bool isConnected(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source);
 
     // completely disconnect the node from the graph
-    void disconnect(std::shared_ptr<AudioNode> node, uint32_t destIdx = 0);
+    void disconnect(std::shared_ptr<AudioNode> node, int destIdx = 0);
 
-    void connectParam(std::shared_ptr<AudioParam> param, std::shared_ptr<AudioNode> driver, uint32_t index);
-    void disconnectParam(std::shared_ptr<AudioParam> param, std::shared_ptr<AudioNode> driver, uint32_t index);
+    // connect a parameter to receive the indexed output of a node
+    void connectParam(std::shared_ptr<AudioParam> param, std::shared_ptr<AudioNode> driver, int index);
 
-    void holdSourceNodeUntilFinished(std::shared_ptr<AudioScheduledSourceNode> node);
+    // connect a named parameter on a node to receive the indexed output of a node
+    void connectParam(std::shared_ptr<AudioNode> destinationNode, char const*const parameterName, std::shared_ptr<AudioNode> driver, int index);
+
+    // disconnect a parameter from the indexed output of a node
+    void disconnectParam(std::shared_ptr<AudioParam> param, std::shared_ptr<AudioNode> driver, int index);
 
     void startOfflineRendering();
     std::function<void()> offlineRenderCompleteCallback;
@@ -107,9 +111,10 @@ private:
     std::mutex m_updateMutex;
     std::condition_variable cv;
 
-    std::atomic<bool> updateThreadShouldRun{true};
+    // -1 means run forever, 0 means stop, n > 0 means run this many times
+    // n > 0 will decrement to zero each time update runs.
+    std::atomic<int> updateThreadShouldRun{-1};
     std::thread graphUpdateThread;
-    void update();
     float graphKeepAlive{0.f};
     float lastGraphUpdateTime{0.f};
 
@@ -118,10 +123,10 @@ private:
     bool m_isOfflineContext = false;
     bool m_automaticPullNodesNeedUpdating = false;  // keeps track if m_automaticPullNodes is modified.
 
-    void uninitialize();
-
-    void handleAutomaticSources();
+    friend class NullDeviceNode; // needs to be able to call update()
+    void update();
     void updateAutomaticPullNodes();
+    void uninitialize();
 
     AudioDeviceRenderCallback * device_callback{nullptr};
     std::shared_ptr<AudioNode> m_device;
@@ -130,7 +135,6 @@ private:
 
     std::set<std::shared_ptr<AudioNode>> m_automaticPullNodes;  // queue for added pull nodes
     std::vector<std::shared_ptr<AudioNode>> m_renderingAutomaticPullNodes;  // vector of known pull nodes
-    std::vector<std::shared_ptr<AudioScheduledSourceNode>> automaticSources;
 };
 
 }  // End namespace lab

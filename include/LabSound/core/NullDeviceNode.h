@@ -10,6 +10,10 @@
 #include "LabSound/core/AudioDevice.h"
 #include "LabSound/core/AudioHardwareDeviceNode.h"
 
+#include <atomic>
+#include <memory>
+#include <thread>
+
 namespace lab
 {
 class AudioBus;
@@ -25,7 +29,7 @@ class NullDeviceNode final : public AudioNode, public AudioDeviceRenderCallback
     void offlineRender();
     bool m_startedRendering{false};
     uint32_t m_numChannels;
-    float m_lengthSeconds;
+    double m_lengthSeconds;
 
     AudioContext * m_context;
 
@@ -33,8 +37,11 @@ class NullDeviceNode final : public AudioNode, public AudioDeviceRenderCallback
     SamplingInfo info;
 
 public:
-    NullDeviceNode(AudioContext * context, const AudioStreamConfig outputConfig, const float lengthSeconds);
+    NullDeviceNode(AudioContext & context, const AudioStreamConfig outputConfig, const double lengthSeconds);
     virtual ~NullDeviceNode();
+
+    static const char* static_name() { return "NulLDevice"; }
+    virtual const char* name() const override { return static_name(); }
 
     // AudioNode Interface
     virtual void initialize() override;
@@ -43,11 +50,11 @@ public:
     virtual double tailTime(ContextRenderLock & r) const override { return 0; }
     virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
 
-    virtual void process(ContextRenderLock &, size_t) override {}  // NullDeviceNode is pulled by its own internal thread so this is never called
+    virtual void process(ContextRenderLock &, int bufferSize) override {}  // NullDeviceNode is pulled by its own internal thread so this is never called
     virtual void reset(ContextRenderLock &) override{};  // @fixme
 
     // AudioDeviceRenderCallback interface
-    virtual void render(AudioBus * src, AudioBus * dst, size_t frames, const SamplingInfo & info) override final;
+    virtual void render(AudioBus * src, AudioBus * dst, int frames, const SamplingInfo & info) override final;
     virtual void start() override final;
     virtual void stop() override final;
     virtual const SamplingInfo getSamplingInfo() const override final;

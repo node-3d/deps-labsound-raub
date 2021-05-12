@@ -12,15 +12,20 @@
 namespace lab
 {
 
-class SfxrNode : public lab::AudioScheduledSourceNode
+class SfxrNode : public AudioScheduledSourceNode
 {
 public:
-    SfxrNode(float sampleRate = LABSOUND_DEFAULT_SAMPLERATE);
+    SfxrNode(AudioContext & ac);
     virtual ~SfxrNode();
 
+    static const char* static_name() { return "SFXR"; }
+    virtual const char* name() const override { return static_name(); }
+
     // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
+
+    std::shared_ptr<AudioSetting> preset() const { return _preset; }
 
     // SfxrNode - values in sfxr units
     std::shared_ptr<AudioSetting> waveType() const { return _waveType; }
@@ -76,28 +81,26 @@ public:
         NOISE
     };
 
-    virtual bool hasBang() const override { return true; }
-    virtual void bang(ContextRenderLock &) override;
-
     // some presets
     void setDefaultBeep();
     void coin();
-    void laser(ContextRenderLock &);
+    void laser();
     void explosion();
     void powerUp();
-    void hit(ContextRenderLock &);
+    void hit();
     void jump();
-    void select(ContextRenderLock &);
+    void select();
 
     // mutate the current sound
-    void mutate(ContextRenderLock &);
-    void randomize(ContextRenderLock &);
+    void mutate();
+    void randomize();
 
 private:
     virtual bool propagatesSilence(ContextRenderLock & r) const override;
     virtual double tailTime(ContextRenderLock & r) const override { return 0; }
     virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
 
+    std::shared_ptr<AudioSetting> _preset;
     std::shared_ptr<AudioSetting> _waveType;
     std::shared_ptr<AudioParam> _attack;
     std::shared_ptr<AudioParam> _sustainTime;

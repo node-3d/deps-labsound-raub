@@ -16,52 +16,6 @@ class AudioBus;
 class AudioSetting;
 class Reverb;
 
-namespace deprecated
-{
-    // Copyright (C) 2010, Google Inc. All rights reserved.
-
-    // params:
-    // settings: normalize
-    //
-    class ConvolverNode final : public AudioNode
-    {
-    public:
-        ConvolverNode();
-        virtual ~ConvolverNode();
-
-        // AudioNode
-        virtual void process(ContextRenderLock &, size_t framesToProcess) override;
-        virtual void reset(ContextRenderLock &) override;
-        virtual void initialize() override;
-        virtual void uninitialize() override;
-
-        // Impulse responses
-        // setImpulse takes an audio bus as a source of a buffer to create an audio
-        // bus from, but the bus and its data is not retained
-        void setImpulse(std::shared_ptr<AudioBus> bus);
-        std::shared_ptr<AudioBus> getImpulse();
-
-        bool normalize() const;
-        void setNormalize(bool normalize);
-
-    private:
-        virtual double tailTime(ContextRenderLock & r) const override;
-        virtual double latencyTime(ContextRenderLock & r) const override;
-
-        std::unique_ptr<Reverb> m_reverb;
-        std::shared_ptr<AudioBus> m_bus;
-
-        // lock free swap on update
-        bool m_swapOnRender;
-        std::unique_ptr<Reverb> m_newReverb;
-        std::shared_ptr<AudioBus> m_newBus;
-
-        // Normalize the impulse response or not. Must default to true.
-        std::shared_ptr<AudioSetting> m_normalize;
-    };
-
-}  // deprecated
-
 // private data for reverb computations
 struct sp_data;
 struct sp_conv;
@@ -70,8 +24,12 @@ struct sp_ftbl;
 class ConvolverNode final : public AudioScheduledSourceNode
 {
 public:
-    ConvolverNode();
+    ConvolverNode(AudioContext& ac);
     virtual ~ConvolverNode();
+
+    static const char* static_name() { return "Convolver"; }
+    virtual const char* name() const override { return static_name(); }
+
     bool normalize() const;
     void setNormalize(bool new_n);
 
@@ -79,7 +37,7 @@ public:
     // The supplied bus is copied for use as an impulse response.
     void setImpulse(std::shared_ptr<AudioBus> bus);
     std::shared_ptr<AudioBus> getImpulse() const;
-    virtual void process(ContextRenderLock & r, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock & r, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 
 protected:
