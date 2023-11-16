@@ -25,12 +25,10 @@ echo 'LABSOUND Build Started'
 		mkdir -p build
 		cd build
 		
-		cmake \
-			-DCMAKE_BUILD_TYPE=RELEASE \
-			-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true \
-			-DLABSOUND_ASOUND=1 ..
+		cmake -DLABSOUND_ASOUND=1 ..
 		
 		cmake --build . --target samplerate --config Release
+		cmake --build . --target libwavpack --config Release
 		cmake --build . --target libnyquist --config Release
 		cmake --build . --target miniaudio --config Release
 		cmake --build . --target LabSound --config Release
