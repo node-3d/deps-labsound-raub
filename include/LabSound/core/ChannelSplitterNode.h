@@ -16,13 +16,17 @@ class ChannelSplitterNode : public AudioNode
 {
 
 public:
-    ChannelSplitterNode(size_t numberOfOutputs = 1);
-    virtual ~ChannelSplitterNode() {}
+    ChannelSplitterNode(AudioContext& ac, int numberOfOutputs = 1);
+    virtual ~ChannelSplitterNode() = default;
 
-    void addOutputs(size_t numberOfOutputs);
+    static const char* static_name() { return "ChannelSplitter"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
+    void addOutputs(int numberOfOutputs);
 
     // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 
 private:

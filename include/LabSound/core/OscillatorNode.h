@@ -7,25 +7,39 @@
 #include "LabSound/core/AudioParam.h"
 #include "LabSound/core/AudioScheduledSourceNode.h"
 #include "LabSound/core/Macros.h"
-#include "LabSound/core/WaveTable.h"
+#include "LabSound/core/PeriodicWave.h"
 
 namespace lab
 {
+
 class AudioBus;
 class AudioContext;
 class AudioSetting;
 
-// params: frequency, detune
+// params: frequency, detune, amplitude, and bias
 // settings: type
 //
+
+// @TODO add duty param for the square wave to complete the oscillator, default value is 0.5
+
 class OscillatorNode : public AudioScheduledSourceNode
 {
+    double phase = 0.0;
+    virtual double tailTime(ContextRenderLock & r) const override { return 0; }
+    virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
+    virtual bool propagatesSilence(ContextRenderLock & r) const override;
+    std::shared_ptr<AudioSetting> m_type;
+
 public:
-    OscillatorNode(const float sampleRate);
+    OscillatorNode(AudioContext& ac);
     virtual ~OscillatorNode();
 
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
-    virtual void reset(ContextRenderLock &) override;
+    static const char* static_name() { return "Oscillator"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
+    virtual void process(ContextRenderLock &, int bufferSize) override;
+    virtual void reset(ContextRenderLock &) override { }
 
     OscillatorType type() const;
     void setType(OscillatorType type);
@@ -35,52 +49,17 @@ public:
     std::shared_ptr<AudioParam> detune() { return m_detune; }
     std::shared_ptr<AudioParam> bias() { return m_bias; }
 
-protected:
-    void _setType(OscillatorType type);
+    std::shared_ptr<AudioParam> m_amplitude; // default 1.0
+    std::shared_ptr<AudioParam> m_frequency; // hz
+    std::shared_ptr<AudioParam> m_bias;      // default 0.0
+    std::shared_ptr<AudioParam> m_detune;    // Detune value in Cents.
 
-    float m_sampleRate;
-
-    double _lab_phase = 0;  // new sine oscillator
-
-    std::shared_ptr<AudioParam> m_amplitude;  // default 1
-    std::shared_ptr<AudioParam> m_frequency;  // hz
-    std::shared_ptr<AudioParam> m_bias;  // default 0
-
-    // Detune value (deviating from the frequency) in Cents.
-    std::shared_ptr<AudioParam> m_detune;
-
-    virtual double tailTime(ContextRenderLock & r) const override { return 0; }
-    virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
-
-    void setWaveTable(std::shared_ptr<WaveTable> table);
-
-    // Returns true if there are sample-accurate timeline parameter changes.
-    bool calculateSampleAccuratePhaseIncrements(ContextRenderLock &, size_t framesToProcess);
-
-    virtual bool propagatesSilence(ContextRenderLock & r) const override;
-
-    void process_oscillator(ContextRenderLock & r, int frames);
-
-    // One of the waveform types defined in the enum.
-    std::shared_ptr<AudioSetting> m_type;
-
-    bool m_firstRender;
-
-    // m_virtualReadIndex is a sample-frame index into the buffer
-    double m_virtualReadIndex;
+    void process_oscillator(ContextRenderLock & r, int bufferSize, int offset, int count);
 
     AudioFloatArray m_phaseIncrements;
     AudioFloatArray m_biasValues;
     AudioFloatArray m_detuneValues;
     AudioFloatArray m_amplitudeValues;
-
-    std::shared_ptr<WaveTable> m_waveTable;
-
-    // Cache the wave tables for different waveform types, except CUSTOM.
-    static std::shared_ptr<WaveTable> s_waveTableSine;
-    static std::shared_ptr<WaveTable> s_waveTableSquare;
-    static std::shared_ptr<WaveTable> s_waveTableSawtooth;
-    static std::shared_ptr<WaveTable> s_waveTableTriangle;
 };
 
 }  // namespace lab

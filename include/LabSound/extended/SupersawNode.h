@@ -18,8 +18,12 @@ class SupersawNode : public AudioScheduledSourceNode
     std::unique_ptr<SupersawNodeInternal> internalNode;
 
 public:
-    SupersawNode();
+    SupersawNode(AudioContext & ac);
     virtual ~SupersawNode();
+
+    static const char* static_name() { return "SuperSaw"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
 
     std::shared_ptr<AudioSetting> sawCount() const;
     std::shared_ptr<AudioParam> frequency() const;
@@ -28,7 +32,7 @@ public:
     void update(ContextRenderLock & r);  // call if sawCount is changed. CBB: update automatically
 
 private:
-    virtual void process(ContextRenderLock &, size_t) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
 
     virtual void reset(ContextRenderLock &) override {}
 

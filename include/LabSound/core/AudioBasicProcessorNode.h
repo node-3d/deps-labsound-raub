@@ -7,6 +7,7 @@
 
 #include "LabSound/core/AudioNode.h"
 #include "LabSound/core/AudioProcessor.h"
+#include "LabSound/extended/AudioContextLock.h"
 #include <memory>
 
 namespace lab
@@ -20,21 +21,17 @@ class AudioNodeInput;
 class AudioBasicProcessorNode : public AudioNode
 {
 public:
-    AudioBasicProcessorNode();
-    virtual ~AudioBasicProcessorNode() {}
+    AudioBasicProcessorNode(AudioContext &, AudioNodeDescriptor const&);
+    virtual ~AudioBasicProcessorNode() = default;
 
     // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
-    virtual void pullInputs(ContextRenderLock &, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
     virtual void initialize() override;
     virtual void uninitialize() override;
 
-    // Called in the main thread when the number of channels for the input may have changed.
-    virtual void checkNumberOfChannelsForInput(ContextRenderLock &, AudioNodeInput *) override;
-
     // Returns the number of channels for both the input and the output.
-    size_t numberOfChannels();
+    int numberOfChannels();
 
 protected:
     virtual double tailTime(ContextRenderLock & r) const override;

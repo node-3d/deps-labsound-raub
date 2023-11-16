@@ -23,7 +23,6 @@ namespace lab
 class AudioBus;
 class ConeEffect;
 class DistanceEffect;
-class HRTFDatabaseLoader;
 class Panner;
 
 // params: orientation[XYZ], velocity[XYZ], position[XYZ]
@@ -61,19 +60,22 @@ public:
         EXPONENTIAL_DISTANCE = 2,
     };
 
-    PannerNode(const float sampleRate, const std::string & hrtf_root_dir_path = "");
+    PannerNode(AudioContext & ac);
     virtual ~PannerNode();
 
+    static const char* static_name() { return "Panner"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
     // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
-    virtual void pullInputs(ContextRenderLock & r, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
     virtual void initialize() override;
     virtual void uninitialize() override;
 
     // Panning model
-    PanningMode panningModel() const;
-    void setPanningModel(PanningMode m);
+    PanningModel panningModel() const;
+    void setPanningModel(PanningModel m);
 
     // Position
     void setPosition(float x, float y, float z) { setPosition(FloatPoint3D(x, y, z)); }
@@ -133,8 +135,6 @@ public:
     virtual double latencyTime(ContextRenderLock & r) const override;
 
 protected:
-    std::shared_ptr<HRTFDatabaseLoader> m_hrtfDatabaseLoader;
-
     // Returns the combined distance and cone gain attenuation.
     virtual float distanceConeGain(ContextRenderLock & r);
 

@@ -4,43 +4,51 @@
 #ifndef ADSR_NODE_H
 #define ADSR_NODE_H
 
-#include "LabSound/core/AudioBasicProcessorNode.h"
+#include "LabSound/core/AudioNode.h"
 #include "LabSound/core/AudioContext.h"
 #include "LabSound/core/AudioSetting.h"
 
 namespace lab
 {
 
-class ADSRNode : public AudioBasicProcessorNode
+
+class ADSRNode : public AudioNode
 {
-    class ADSRNodeInternal;
-    ADSRNodeInternal * internalNode;
+    class ADSRNodeImpl;
+    ADSRNodeImpl * adsr_impl;
 
 public:
-    ADSRNode();
+    ADSRNode(AudioContext &);
     virtual ~ADSRNode();
 
-    // bang will attack, hold, decay, release
-    virtual bool hasBang() const override { return true; }
-    virtual void bang(ContextRenderLock &) override;
+    static const char* static_name() { return "ADSR"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
 
-    // noteOn will attack, noteOff will decay, release
-    // If noteOn is called before noteOff has finished, a pop can occur. Polling
-    // finished and avoiding noteOn while finished is true can avoid the popping.
-    void noteOn(double when);
-    void noteOff(ContextRenderLock &, double when);
+    // This function will return true after the release period (only if a noteOff has been issued). 
+    bool finished(ContextRenderLock &);
 
-    bool finished(ContextRenderLock &);  // if a noteOff has been issued, finished will be true after the release period
+    void set(float attack_time, float attack_level, float decay_time, float sustain_time, float sustain_level, float release_time);
 
-    void set(float aT, float aL, float d, float s, float r);
+    virtual void process(ContextRenderLock& r, int bufferSize) override;
+    virtual void reset(ContextRenderLock&) override;
+    virtual double tailTime(ContextRenderLock& r) const override { return 0.; }
+    virtual double latencyTime(ContextRenderLock& r) const override { return 0.f; }
+
+    // gate is a two state signal. Changing the gate signal to one means that the attack/decay segment will start
+    // If oneShot is false, sustainTime is ignored, and sustain is held until gain goes to zero.
+    // If oneShot is true, transitioning the gate to zero has no effect.
+    std::shared_ptr<AudioParam> gate() const; // gate signal
+    std::shared_ptr<AudioSetting> oneShot() const;  // If false, gate controls attack and sustain, else sustainTime controls sustain
 
     std::shared_ptr<AudioSetting> attackTime() const;  // Duration in seconds
     std::shared_ptr<AudioSetting> attackLevel() const;  // Level
     std::shared_ptr<AudioSetting> decayTime() const;  // Duration in seconds
-    std::shared_ptr<AudioSetting> holdTime() const;  // Duration in seconds
+    std::shared_ptr<AudioSetting> sustainTime() const;  // Duration in seconds
     std::shared_ptr<AudioSetting> sustainLevel() const;  // Level
     std::shared_ptr<AudioSetting> releaseTime() const;  // Duration in seconds
 };
+
 }
 
 #endif

@@ -15,16 +15,19 @@ class FunctionNode : public AudioScheduledSourceNode
 {
 
 public:
-    FunctionNode(size_t channels = 1);
+    FunctionNode(AudioContext & ac, int channels = 1);
     virtual ~FunctionNode();
 
-    // @tofix - should this be protected with a mutex?
-    void setFunction(std::function<void(ContextRenderLock & r, FunctionNode * me, int channel, float * buffer, size_t frames)> fn)
+    static const char* static_name() { return "Function"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
+    void setFunction(std::function<void(ContextRenderLock & r, FunctionNode * me, int channel, float * buffer, int bufferSize)> fn)
     {
         _function = fn;
     }
 
-    virtual void process(ContextRenderLock & r, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock & r, int bufferSize) override;
     virtual void reset(ContextRenderLock & r) override;
 
     double now() const { return _now; }
@@ -34,7 +37,7 @@ private:
     virtual double tailTime(ContextRenderLock & r) const override { return 0; }
     virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
 
-    std::function<void(ContextRenderLock & r, FunctionNode * me, int channel, float * values, size_t framesToProcess)> _function;
+    std::function<void(ContextRenderLock & r, FunctionNode * me, int channel, float * values, int bufferSize)> _function;
 
     double _now = 0.0;
 };

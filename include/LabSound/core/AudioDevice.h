@@ -62,7 +62,7 @@ struct SamplingInfo
 //
 // `pull_graph(...)` will need to be called by a single AudioNode per-context. For instance,
 // the `AudioHardwareDeviceNode` or the `NullDeviceNode`.
-void pull_graph(AudioContext * ctx, AudioNodeInput * required_inlet, AudioBus * src, AudioBus * dst, size_t frames,
+void pull_graph(AudioContext * ctx, AudioNodeInput * required_inlet, AudioBus * src, AudioBus * dst, int frames,
                 const SamplingInfo & info, AudioHardwareInput * optional_hardware_input = nullptr);
 
 ///////////////////////////////////
@@ -80,13 +80,14 @@ class AudioDeviceRenderCallback
 
 public:
     virtual ~AudioDeviceRenderCallback() {}
-    virtual void render(AudioBus * src, AudioBus * dst, size_t frames, const SamplingInfo & info) = 0;
+    virtual void render(AudioBus * src, AudioBus * dst, int frames, const SamplingInfo & info) = 0;
     virtual void start() = 0;
     virtual void stop() = 0;
+    virtual bool isRunning() const = 0;
 
-    virtual const SamplingInfo getSamplingInfo() const = 0;
-    virtual const AudioStreamConfig getOutputConfig() const = 0;
-    virtual const AudioStreamConfig getInputConfig() const = 0;
+    virtual const SamplingInfo & getSamplingInfo() const = 0;
+    virtual const AudioStreamConfig & getOutputConfig() const = 0;
+    virtual const AudioStreamConfig & getInputConfig() const = 0;
 };
 
 /////////////////////
@@ -96,17 +97,27 @@ public:
 // The audio hardware periodically calls the AudioDeviceRenderCallback `render()` method asking it to
 // render/output the next render quantum of audio. It optionally will pass in local/live audio
 // input when it calls `render()`.
+
+struct AudioDeviceIndex
+{
+    uint32_t index;
+    bool valid;
+};
+
 class AudioDevice
 {
 public:
     static std::vector<AudioDeviceInfo> MakeAudioDeviceList();
-    static uint32_t GetDefaultOutputAudioDeviceIndex();
-    static uint32_t GetDefaultInputAudioDeviceIndex();
-    static AudioDevice * MakePlatformSpecificDevice(AudioDeviceRenderCallback &, const AudioStreamConfig outputConfig, const AudioStreamConfig inputConfig);
+    static AudioDeviceIndex GetDefaultOutputAudioDeviceIndex() noexcept;
+    static AudioDeviceIndex GetDefaultInputAudioDeviceIndex() noexcept;
+    static AudioDevice * MakePlatformSpecificDevice(AudioDeviceRenderCallback &, 
+        const AudioStreamConfig & outputConfig, const AudioStreamConfig & inputConfig);
 
     virtual ~AudioDevice() {}
     virtual void start() = 0;
     virtual void stop() = 0;
+    virtual bool isRunning() const = 0;
+    virtual void backendReinitialize() {}
 };
 
 }  // lab

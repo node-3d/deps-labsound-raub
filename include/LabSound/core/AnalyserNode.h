@@ -6,6 +6,7 @@
 #define AnalyserNode_h
 
 #include "LabSound/core/AudioBasicInspectorNode.h"
+#include "LabSound/core/AudioNodeDescriptor.h"
 
 namespace lab
 {
@@ -20,7 +21,7 @@ class AudioSetting;
 //
 class AnalyserNode : public AudioBasicInspectorNode
 {
-    void shared_construction(size_t fftSize);
+    void shared_construction(int fftSize);
 
     virtual double tailTime(ContextRenderLock & r) const override { return 0; }
     virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
@@ -29,14 +30,18 @@ class AnalyserNode : public AudioBasicInspectorNode
     Detail * _detail = nullptr;
 
 public:
-    AnalyserNode();
-    AnalyserNode(size_t fftSize);
+    AnalyserNode(AudioContext & ac);
+    AnalyserNode(AudioContext & ac, int fftSize);
     virtual ~AnalyserNode();
 
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    static const char* static_name() { return "Analyser"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 
-    void setFftSize(ContextRenderLock &, size_t fftSize);
+    void setFftSize(ContextRenderLock &, int fftSize);
     size_t fftSize() const;
 
     // a value large enough to hold all the data return from get*FrequencyData
@@ -52,7 +57,6 @@ public:
     double smoothingTimeConstant() const;
 
     // frequency bins, reported in db
-    // @TODO, add a normalization option to perform the same normalization as getByteFrequency data.
     void getFloatFrequencyData(std::vector<float> & array);
 
     // frequency bins, reported as a linear mapping of minDecibels to maxDecibles onto 0-255.

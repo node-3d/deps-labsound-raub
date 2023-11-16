@@ -21,11 +21,14 @@ class AudioSetting;
 class PowerMonitorNode : public AudioBasicInspectorNode
 {
 public:
-    PowerMonitorNode();
-
+    PowerMonitorNode(AudioContext & ac);
     virtual ~PowerMonitorNode();
 
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    static const char* static_name() { return "PowerMonitor"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
 
     // instantaneous estimation of power
@@ -42,8 +45,8 @@ public:
     // The intent of the power monitor node is to provide levels that can be used for a VU meter
     // or a ducking algorithm.
     //
-    void windowSize(size_t ws);
-    size_t windowSize() const;
+    void windowSize(int ws);
+    int windowSize() const;
 
 private:
     virtual double tailTime(ContextRenderLock & r) const override { return 0; }  // required for BasicInspector

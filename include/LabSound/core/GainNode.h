@@ -22,17 +22,17 @@ class AudioContext;
 //
 class GainNode : public AudioNode
 {
-
 public:
-    GainNode();
+    GainNode(AudioContext& ac);
     virtual ~GainNode();
 
-    // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
-    virtual void reset(ContextRenderLock &) override;
+    static const char* static_name() { return "Gain"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
 
-    // Called in the main thread when the number of channels for the input may have changed.
-    virtual void checkNumberOfChannelsForInput(ContextRenderLock &, AudioNodeInput *) override;
+    // AudioNode
+    virtual void process(ContextRenderLock &, int bufferSize) override;
+    virtual void reset(ContextRenderLock &) override;
 
     std::shared_ptr<AudioParam> gain() const { return m_gain; }
 

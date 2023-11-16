@@ -24,11 +24,15 @@ class DynamicsCompressorNode : public AudioNode
 {
 
 public:
-    DynamicsCompressorNode();
+    DynamicsCompressorNode(AudioContext& ac);
     virtual ~DynamicsCompressorNode();
 
+    static const char* static_name() { return "DynamicsCompressor"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
     // AudioNode
-    virtual void process(ContextRenderLock &, size_t framesToProcess) override;
+    virtual void process(ContextRenderLock &, int bufferSize) override;
     virtual void reset(ContextRenderLock &) override;
     virtual void initialize() override;
     virtual void uninitialize() override;

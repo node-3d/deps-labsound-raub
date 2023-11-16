@@ -23,33 +23,42 @@ protected:
     virtual double tailTime(ContextRenderLock & r) const override { return 0; }
     virtual double latencyTime(ContextRenderLock & r) const override { return 0; }
 
-    AudioContext * m_context;
+    AudioContext * m_context = nullptr;
 
     // Platform specific implementation
     std::unique_ptr<AudioDevice> m_platformAudioDevice;
-    AudioHardwareInput * m_audioHardwareInput{nullptr};
-    SamplingInfo last_info;
+    AudioHardwareInput * m_audioHardwareInput = nullptr;
+    SamplingInfo last_info = {};
 
-    const AudioStreamConfig outConfig;
-    const AudioStreamConfig inConfig;
+    const AudioStreamConfig outConfig = {};
+    const AudioStreamConfig inConfig = {};
 
 public:
-    AudioHardwareDeviceNode(AudioContext * context, const AudioStreamConfig outputConfig, const AudioStreamConfig inputConfig);
+    AudioHardwareDeviceNode(AudioContext & context, 
+        const AudioStreamConfig & outputConfig, const AudioStreamConfig & inputConfig);
     virtual ~AudioHardwareDeviceNode();
 
+    static const char* static_name() { return "AudioHardwareDevice"; }
+    virtual const char* name() const override { return static_name(); }
+    static AudioNodeDescriptor * desc();
+
     // AudioNode interface
-    virtual void process(ContextRenderLock &, size_t) override {}  // AudioHardwareDeviceNode is pulled by hardware so this is never called
+    // process should never be called
+    virtual void process(ContextRenderLock &, int bufferSize) override {}
     virtual void reset(ContextRenderLock &) override;
     virtual void initialize() override;
     virtual void uninitialize() override;
 
+    virtual void backendReinitialize();
+
     // AudioDeviceRenderCallback interface
-    virtual void render(AudioBus * src, AudioBus * dst, size_t frames, const SamplingInfo & info) override;
+    virtual void render(AudioBus * src, AudioBus * dst, int frames, const SamplingInfo & info) override;
     virtual void start() override;
     virtual void stop() override;
-    virtual const SamplingInfo getSamplingInfo() const override;
-    virtual const AudioStreamConfig getOutputConfig() const override;
-    virtual const AudioStreamConfig getInputConfig() const override;
+    virtual bool isRunning() const override;
+    virtual const SamplingInfo & getSamplingInfo() const override;
+    virtual const AudioStreamConfig & getOutputConfig() const override;
+    virtual const AudioStreamConfig & getInputConfig() const override;
 
     AudioSourceProvider * AudioHardwareInputProvider();
 };

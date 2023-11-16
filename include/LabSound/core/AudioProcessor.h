@@ -20,8 +20,7 @@ class AudioProcessor
 {
 
 public:
-    AudioProcessor(unsigned numberOfChannels)
-        : m_numberOfChannels(numberOfChannels)
+    AudioProcessor()
     {
     }
     virtual ~AudioProcessor() {}
@@ -31,14 +30,10 @@ public:
     virtual void uninitialize() = 0;
 
     // Processes the source to destination bus.  The number of channels must match in source and destination.
-    virtual void process(ContextRenderLock &, const AudioBus * source, AudioBus * destination, size_t framesToProcess) = 0;
+    virtual void process(ContextRenderLock &, const AudioBus * source, AudioBus * destination, int bufferSize) = 0;
 
     // Resets filter state
     virtual void reset() = 0;
-
-    void setNumberOfChannels(size_t n) { m_numberOfChannels = n; }
-    size_t numberOfChannels() const { return m_numberOfChannels; }
-
     bool isInitialized() const { return m_initialized; }
 
     virtual double tailTime(ContextRenderLock & r) const = 0;
@@ -46,7 +41,6 @@ public:
 
 protected:
     bool m_initialized = false;
-    size_t m_numberOfChannels;
 };
 
 }  // namespace lab

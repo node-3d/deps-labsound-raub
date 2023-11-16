@@ -22,28 +22,26 @@ class AudioBus;
 // The number of channels of the input's bus is the maximum of the number of channels of all its connections.
 class AudioNodeInput : public AudioSummingJunction
 {
-    AudioNode * m_node;
+    AudioNode * m_destinationNode;
     std::unique_ptr<AudioBus> m_internalSummingBus;
 
 public:
-    explicit AudioNodeInput(AudioNode * audioNode, size_t processingSizeInFrames = AudioNode::ProcessingSizeInFrames);
+    explicit AudioNodeInput(AudioNode * audioNode, int processingSizeInFrames = AudioNode::ProcessingSizeInFrames);
     virtual ~AudioNodeInput();
 
-    // AudioSummingJunction
-    virtual void didUpdate(ContextRenderLock &) override;
-
     // Can be called from any thread.
-    AudioNode * node() const { return m_node; }
+    AudioNode * destinationNode() const { return m_destinationNode; }
 
     // Must be called with the context's graph lock. Static because a shared pointer to this is required
     static void connect(ContextGraphLock &, std::shared_ptr<AudioNodeInput> fromInput, std::shared_ptr<AudioNodeOutput> toOutput);
     static void disconnect(ContextGraphLock &, std::shared_ptr<AudioNodeInput> fromInput, std::shared_ptr<AudioNodeOutput> toOutput);
+    static void disconnectAll(ContextGraphLock&, std::shared_ptr<AudioNodeInput> fromInput);
 
     // pull() processes all of the AudioNodes connected to this NodeInput.
     // In the case of multiple connections, the result is summed onto the internal summing bus.
     // In the single connection case, it allows in-place processing where possible using inPlaceBus.
     // It returns the bus which it rendered into, returning inPlaceBus if in-place processing was performed.
-    AudioBus * pull(ContextRenderLock &, AudioBus * inPlaceBus, size_t framesToProcess);
+    AudioBus * pull(ContextRenderLock &, AudioBus * inPlaceBus, int bufferSize);
 
     // bus() contains the rendered audio after pull() has been called for each time quantum.
     AudioBus * bus(ContextRenderLock &);
@@ -54,7 +52,7 @@ public:
 
     // The number of channels of the connection with the largest number of channels.
     // Only valid during render quantum because it is dependent on the active bus
-    size_t numberOfChannels(ContextRenderLock &) const;
+    int numberOfChannels(ContextRenderLock &) const;
 };
 
 }  // namespace lab
