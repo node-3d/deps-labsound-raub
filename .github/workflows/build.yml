@@ -73,53 +73,19 @@ jobs:
         with:
           msbuild-architecture: x64
 
-      - name: Build Linux
-        if: matrix.os != 'windows-2022' && matrix.os != 'macos-11'
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -qq xorg-dev
-          chmod +x src/linux.sh && src/linux.sh
-      - name: Store Binaries
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          draft: true
-          tag_name: linux-${{ github.run }}-${{ github.sha }}
-          name: LabSound Linux
-          body: Linux LabSound binaries at ${{ github.sha }}
-          files: src/build/*
+      - name: Build Pre Step
+        run: chmod +x src/extract.sh && src/extract.sh
+
+      - name: Build Unix
+        if: matrix.os != 'windows-2022'
+        run: node src/build-unix
 
       - name: Build Windows
         if: matrix.os == 'windows-2022'
-        shell: cmd
-        run: |
-          src\windows.cmd
-      - name: Store Binaries
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          draft: true
-          tag_name: windows-${{ github.run }}-${{ github.sha }}
-          name: LabSound Windows
-          body: Windows LabSound binaries at ${{ github.sha }}
-          files: src/build/*
+        run: src/windows.sh
 
-      - name: Build OSX
-        if: matrix.os == 'macos-11'
-        run: |
-          chmod +x src/osx.sh && src/osx.sh
-      - name: Store Binaries
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          draft: true
-          tag_name: osx-${{ github.run }}-${{ github.sha }}
-          name: LabSound OSX
-          body: OSX LabSound binaries at ${{ github.sha }}
-          files: src/build/*
+      - name: Build Post Step
+        run: node src/build-post
 
       - name: Get Package Version
         id: package-version

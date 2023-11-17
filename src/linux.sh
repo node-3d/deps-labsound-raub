@@ -1,36 +1,15 @@
-echo 'LABSOUND Build Started'
-
 (
-	cd src
-	rm -rf LabSound-1.2.0
-	unzip -qq LabSound-1.2.0.zip -d .
-	
-	unzip -qq alsa.zip -d LabSound-1.2.0/include
-	
-	unzip -qq libsamplerate-0.2.2.zip -d LabSound-1.2.0/third_party/libsamplerate-0.2.2
-	mv LabSound-1.2.0/third_party/libsamplerate-0.2.2/libsamplerate-0.2.2/* LabSound-1.2.0/third_party/libsamplerate
-	
-	unzip -qq libnyquist-master.zip -d LabSound-1.2.0/third_party/libnyquist
-	mv LabSound-1.2.0/third_party/libnyquist/libnyquist-master/* LabSound-1.2.0/third_party/libnyquist
-	
-	rm -rf build
+	cd src/LabSound-1.2.0
 	mkdir -p build
+	cd build
 	
-	(
-		cd LabSound-1.2.0
-		mkdir -p build
-		cd build
-		
-		cmake -DLABSOUND_ASOUND=1 ..
-		
-		cmake --build . --target samplerate --config Release
-		cmake --build . --target libnyquist --config Release
-		cmake --build . --target LabSound --config Release
-	)
+	cmake -DLABSOUND_ASOUND=1 ..
 	
-	cp LabSound-1.2.0/build/bin/libLabSound.a build/libLabSound.a
-	cp LabSound-1.2.0/build/third_party/libnyquist/lib/liblibnyquist.a build/liblibnyquist.a
-	cp LabSound-1.2.0/build/third_party/libsamplerate/src/libsamplerate.a build/libsamplerate.a
+	cmake --build . --target samplerate --config Release
+	cmake --build . --target libnyquist --config Release
+	cmake --build . --target LabSound --config Release
 )
 
-echo 'LABSOUND Build Finished'
+cp src/LabSound-1.2.0/build/bin/libLabSound.a src/build/libLabSound.a
+cp src/LabSound-1.2.0/build/third_party/libnyquist/lib/liblibnyquist.a src/build/liblibnyquist.a
+cp src/LabSound-1.2.0/build/third_party/libsamplerate/src/libsamplerate.a src/build/libsamplerate.a
