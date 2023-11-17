@@ -12,7 +12,7 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright (C) 2015 Intel Corporation
  *
@@ -40,10 +40,9 @@ extern "C" {
  * currently recognises the following object types :-
  *
  *  * Controls (mixer, enumerated and byte) including TLV data.
- *  * PCMs (Front End DAI & DAI link)
+ *  * PCMs (FE and BE configurations and capabilities)
  *  * DAPM widgets
  *  * DAPM graph elements.
- *  * Physical DAI & DAI links
  *  * Private data for each object type.
  *  * Manifest (containing count of each object type)
  *
@@ -93,35 +92,6 @@ extern "C" {
  *  * enum_value
  *  * range
  *  * strobe
- *
-* <h5>Control Access</h5>
- * Controls access can be specified using the "access" section. If no "access"
- * section is defined then default RW access flags are set for normal and TLV
- * controls.
- *
- * <pre>
- *	access [
- *		read
- *		write
- *		tlv_command
- *	]
- * </pre>
- *
- * The standard access flags are as follows :-
- *  * read
- *  * write
- *  * read_write
- *  * volatile
- *  * timestamp
- *  * tlv_read
- *  * tlv_write
- *  * tlv_read_write
- *  * tlv_command
- *  * inactive
- *  * lock
- *  * owner
- *  * tlv_callback
- *  * user
  *
  * <h5>Control TLV Data</h5>
  * Controls can also use TLV data to represent dB information. This can be done
@@ -204,140 +174,12 @@ extern "C" {
  *	bytes "0x12,0x34,0x56,0x78"
  *	shorts "0x1122,0x3344,0x5566,0x7788"
  *	words "0xaabbccdd,0x11223344,0x66aa77bb,0xefef1234"
- *	tuples "section id of the vendor tuples"
  * };
  * </pre>
- * The file, bytes, shorts, words and tuples keywords are all mutually
- * exclusive as the private data should only be taken from one source.
- * The private data can either be read from a separate file or defined in
- * the topology file using the bytes, shorts, words or tuples keywords.
- * The keyword tuples is to define vendor specific tuples. Please refer to
- * section Vendor Tokens and Vendor tuples.
- *
- * It's easy to use a vendor tuples object to define a C structure instance.
- * And a data section can include multiple vendor tuples objects:
- *
- * <pre>
- * SectionData."data element name" {
- *	index "1"	# Index number
- *	tuples [
- *		"id of the 1st vendor tuples section"
- *		"id of the 2nd vendor tuples section"
- *		...
- *	]
- * };
- * </pre>
- *
- * <h5>How to define an element with private data</h5>
- * An element can refer to a single data section or multiple data
- * sections.
- *
- * <h6>To refer to a single data section:</h6>
- * <pre>
- * Sectionxxx."element name" {
- *    ...
- *	data "name of data section"		# optional private data
- * }
- * </pre>
- *
- * <h6>To refer to multiple data sections:</h6>
- * <pre>
- * Sectionxxx."element name" {
- *	...
- *	data [						# optional private data
- *		"name of 1st data section"
- *		"name of 2nd data section"
- *		...
- *	]
- * }
- * </pre>
- * And data of these sections will be merged in the same order as they are
- * in the list, as the element's private data for kernel.
- *
- *  <h6>Vendor Tokens</h6>
- * A vendor token list is defined as a new section. Each token element is
- * a pair of string ID and integer value. And both the ID and value are
- * vendor-specific.
- *
- * <pre>
- * SectionVendorTokens."id of the vendor tokens" {
- *	comment "optional comments"
- *	VENDOR_TOKEN_ID1 "1"
- *	VENDOR_TOKEN_ID2 "2"
- *	VENDOR_TOKEN_ID3 "3"
- *	...
- * }
- * </pre>
- *
- *  <h6>Vendor Tuples</h6>
- * Vendor tuples are defined as a new section. It contains a reference to
- * a vendor token list and several tuple arrays.
- * All arrays share a vendor token list, defined by the tokens keyword.
- * Each tuple array is for a specific type, defined by the string following
- * the tuples keyword. Supported types are: string, uuid, bool, byte,
- * short and word.
- *
- * <pre>
- * SectionVendorTuples."id of the vendor tuples" {
- *	tokens "id of the vendor tokens"
- *
- *	tuples."string" {
- *		VENDOR_TOKEN_ID1 "character string"
- *		...
- *	}
- *
- *	tuples."uuid" {			# 16 characters separated by commas
- *		VENDOR_TOKEN_ID2 "0x01,0x02,...,0x0f"
- *		...
- *	}
- *
- *	tuples."bool" {
- *		VENDOR_TOKEN_ID3 "true/false"
- *		...
- *	}
- *
- *	tuples."byte" {
- *		VENDOR_TOKEN_ID4 "0x11"
- *		VENDOR_TOKEN_ID5 "0x22"
- *		...
- *	}
- *
- *	tuples."short" {
- *		VENDOR_TOKEN_ID6 "0x1122"
- *		VENDOR_TOKEN_ID7 "0x3344"
- *		...
- *	}
- *
- *	tuples."word" {
- *		VENDOR_TOKEN_ID8 "0x11223344"
- *		VENDOR_TOKEN_ID9 "0x55667788"
- *		...
- *	}
- * }
- * </pre>
- * To define multiple vendor tuples of same type, please append some
- * characters after the type string ("string", "uuid", "bool", "byte", "short"
- * or "word"), to avoid ID duplication in the SectionVendorTuples.<br>
- * The parser will check the first few characters in ID to get the tuple type.
- * Here is an example:
- * <pre>
- * SectionVendorTuples."id of the vendor tuples" {
- *    ...
- *	tuples."word.module0" {
- *		VENDOR_TOKEN_PARAM_ID1 "0x00112233"
- *		VENDOR_TOKEN_PARAM_ID2 "0x44556677"
- *		...
- *	}
- *
- *	tuples."word.module2" {
- *		VENDOR_TOKEN_PARAM_ID1 "0x11223344"
- *		VENDOR_TOKEN_PARAM_ID2 "0x55667788"
- *		...
- *	}
- *	...
- * }
- *
- * </pre>
+ * The file, bytes, shorts and words keywords are all mutually exclusive as
+ * the private data should only be taken from one source.  The private data can
+ * either be read from a separate file or defined in the topology file using
+ * the bytes, shorts or words keywords.
  *
  * <h5>Mixer Controls</h5>
  * A mixer control is defined as a new section that can include channel mapping,
@@ -368,10 +210,9 @@ extern "C" {
  * </pre>
  *
  * The section name is used to define the mixer name. The index number can be
- * used to identify topology objects groups(index "0" is common, fit for all
- * user cases).This allows driver operations on objects with index number N and
- * can be used to add/remove pipelines of objects whilst other objects are
- * unaffected.
+ * used to identify topology objects groups. This allows driver operations on
+ * objects with index number N and can be used to add/remove pipelines of
+ * objects whilst other objects are unaffected.
  *
  * <h5>Byte Controls</h5>
  * A byte control is defined as a new section that can include channel mapping,
@@ -417,7 +258,7 @@ extern "C" {
  *		Values [
  *			"value1"
  *			"value2"
- *			"value3"
+			"value3"
  *		]
  * }
  * </pre>
@@ -497,12 +338,11 @@ extern "C" {
  *	index "1"			# Index number
  *
  *	type "aif_in"			# Widget type - detailed above
- *	stream_name "name"		# Stream name
  *
  *	no_pm "true"			# No PM control bit.
  *	reg "20"			# PM bit register offset
  *	shift "0"			# PM bit register shift
- *	invert "1"			# PM bit is inverted
+ *	invert "1			# PM bit is inverted
  *	subseq "8"			# subsequence number
  *
  *	event_type "1"			# DAPM widget event type
@@ -520,19 +360,14 @@ extern "C" {
  * fields are the same for widgets as they are for controls whilst the other
  * fields map on very closely to the driver widget fields.
  *
- * <h5>Widget Private Data</h5>
- * Widget can have private data. For the format of the private data, please
- * refer to section Control Private Data.
- *
  * <h4>PCM Capabilities</h4>
- * Topology can also define the PCM capabilities of front end or physical DAIs.
- * Capabilities can be defined with the following section :-
+ * Topology can also define the capabilities of FE and BE PCMs. Capabilities
+ * can be defined with the following section :-
  *
  * <pre>
  * SectionPCMCapabilities."name" {
  *
  *	formats "S24_LE,S16_LE"		# Supported formats
- *	rates "48000"			# Supported rates
  *	rate_min "48000"		# Max supported sample rate
  *	rate_max "48000"		# Min supported sample rate
  *	channels_min "2"		# Min number of channels
@@ -540,8 +375,8 @@ extern "C" {
  * }
  * </pre>
  * The supported formats use the same naming convention as the driver macros.
- * The PCM capabilities name can be referred to and included by PCM and
- * physical DAI sections.
+ * The PCM capabilities name can be referred to and included by BE, PCM and
+ * Codec <-> codec topology sections.
  *
  * <h4>PCM Configurations</h4>
  * PCM runtime configurations can be defined for playback and capture stream
@@ -567,14 +402,31 @@ extern "C" {
  * </pre>
  *
  * The supported formats use the same naming convention as the driver macros.
- * The PCM configuration name can be referred to and included by PCM and
- * physical link sections.
+ * The PCM configuration name can be referred to and included by BE, PCM and
+ * Codec <-> codec topology sections.
  *
- * <h4>PCM (Front-end DAI & DAI link) </h4>
- * PCM sections define the supported capabilities and configurations for
- * supported playback and capture streams, names and flags for front end
- * DAI & DAI links. Topology kernel driver will use a PCM object to create
- * a pair of FE DAI & DAI links.
+ * <h4>PCM Configurations</h4>
+ * PCM, BE and Codec to Codec link sections define the supported capabilities
+ * and configurations for supported playback and capture streams. The
+ * definitions and content for PCMs, BE and Codec links are the same with the
+ * exception of the section type :-
+ *
+ * <pre>
+ * SectionPCM."name" {
+ *	....
+ * }
+ * SectionBE."name" {
+ *	....
+ * }
+ * SectionCC."name" {
+ *	....
+ * }
+ * </pre>
+ *
+ * The section types above should be used for PCMs, Back Ends and Codec to Codec
+ * links respectively.<br>
+ *
+ * The data for each section is defined as follows :-
  *
  * <pre>
  * SectionPCM."name" {
@@ -582,10 +434,6 @@ extern "C" {
  *	index "1"			# Index number
  *
  *	id "0"				# used for binding to the PCM
- *
- *	dai."name of front-end DAI" {
- *		id "0"		# used for binding to the front-end DAI
- *	}
  *
  *	pcm."playback" {
  *		capabilities "capabilities1"	# capabilities for playback
@@ -605,136 +453,9 @@ extern "C" {
  *			"config3"
  *		]
  *	}
- *
- *	# Optional boolean flags
- *	symmetric_rates			"true"
- *	symmetric_channels		"true"
- *	symmetric_sample_bits		"false"
- *
- *	data "name"			# optional private data
  * }
  * </pre>
  *
- * <h4>Physical DAI Link Configurations</h4>
- * The runtime configurations of a physical DAI link can be defined by
- * SectionLink. <br> Backend DAI links belong to physical links, and can
- * be configured by either SectionLink or SectionBE, with same syntax.
- * But SectionBE is deprecated atm since the internal processing is
- * actually same.
- *
- * <pre>
- * SectionLink."name" {
- *
- *	index "1"			# Index number
- *
- *	id "0"				# used for binding to the link
- *
- *	stream_name "name"		# used for binding to the link
- *
- *	hw_configs [	# runtime supported HW configurations, optional
- *		"config1"
- *		"config2"
- *		...
- *	]
- *
- *	default_hw_conf_id "1"		# default HW config ID for init
- *
- *	# Optional boolean flags
- *	symmetric_rates			"true"
- *	symmetric_channels		"false"
- *	symmetric_sample_bits		"true"
- *
- *	data "name"			# optional private data
- * }
- * </pre>
- *
- * A physical link can refer to multiple runtime supported hardware
- * configurations, which is defined by SectionHWConfig.
- *
- * <pre>
- * SectionHWConfig."name" {
- *
- *	id "1"				# used for binding to the config
- *	format "I2S"			# physical audio format.
- *	bclk   "codec_provider"		# Codec provides the bit clock
- *	fsync  "codec_consumer"		# Codec follows the fsync
- * }
- * </pre>
- *
- * <h4>Physical DAI</h4>
- * A physical DAI (e.g. backend DAI for DPCM) is defined as a new section
- * that can include a unique ID, playback and capture stream capabilities,
- * optional flags, and private data. <br>
- * Its PCM stream capablities are same as those for PCM objects,
- * please refer to section 'PCM Capabilities'.
- *
- * <pre>
- * SectionDAI."name" {
- *
- *	index "1"			# Index number
- *
- *	id "0"				# used for binding to the Backend DAI
- *
- *	pcm."playback" {
- *		capabilities "capabilities1"	# capabilities for playback
- *	}
- *
- *	pcm."capture" {
- *		capabilities "capabilities2"	# capabilities for capture
- *	}
- *
- *	symmetric_rates "true"			# optional flags
- *	symmetric_channels "true"
- *	symmetric_sample_bits "false"
- *
- *	data "name"			# optional private data
- * }
- * </pre>
- *
- * <h4>Manifest Private Data</h4>
- * Manfiest may have private data. Users need to define a manifest section
- * and add the references to 1 or multiple data sections. Please refer to
- * section 'How to define an element with private data'. <br>
- * And the text conf file can have at most 1 manifest section. <br><br>
- *
- * Manifest section is defined as follows :-
- *
- * <pre>
- * SectionManifest"name" {
- *
- *	data "name"			# optional private data
- * }
- * </pre>
- *
- * <h4>Include other files</h4>
- * Users may include other files in a text conf file via alsaconf syntax
- * <path/to/configuration-file>. This allows users to define common info
- * in separate files (e.g. vendor tokens, tuples) and share them for
- * different platforms, thus save the total size of config files. <br>
- * Users can also specifiy additional configuraiton directories relative
- * to "/usr/share/alsa/" to search the included files,  via alsaconf syntax
- * <searchfdir:/relative-path/to/usr/share/alsa>. <br><br>
- *
- * For example, file A and file B are two text conf files for platform X,
- * they will be installed to /usr/share/alsa/topology/platformx. If we
- * need file A to include file B, in file A we can add: <br>
- *
- * <searchdir:topology/platformx> <br>
- * <name-of-file-B> <br><br>
- *
- * ALSA conf will search and open an included file in the following order
- * of priority:
- *  1. directly open the file by its name;
- *  2. search for the file name in "/usr/share/alsa";
- *  3. search for the file name in user specified subdirectories under
- *     "/usr/share/alsa".
- *
- * The order of the included files need not to be same as their
- * dependencies, since the topology library will load them all before
- * parsing their dependencies. <br>
- *
- * The configuration directories defined by a file will only be used to search
- * the files included by this file.
  */
 
 /** Maximum number of channels supported in one control */
@@ -759,25 +480,7 @@ enum snd_tplg_type {
 	SND_TPLG_TYPE_BE,		/*!< BE DAI link */
 	SND_TPLG_TYPE_CC,		/*!< Hostless codec <-> codec link */
 	SND_TPLG_TYPE_MANIFEST,		/*!< Topology manifest */
-	SND_TPLG_TYPE_TOKEN,		/*!< Vendor tokens */
-	SND_TPLG_TYPE_TUPLE,		/*!< Vendor tuples */
-	SND_TPLG_TYPE_LINK,		/*!< Physical DAI link */
-	SND_TPLG_TYPE_HW_CONFIG,	/*!< Link HW config */
-	SND_TPLG_TYPE_DAI,		/*!< Physical DAI */
 };
-
-/** Fit for all user cases */
-#define SND_TPLG_INDEX_ALL  0
-
-/** Flags for the snd_tplg_create */
-#define SND_TPLG_CREATE_VERBOSE		(1<<0)	/*!< Verbose output */
-#define SND_TPLG_CREATE_DAPM_NOSORT	(1<<1)	/*!< Do not sort DAPM objects by index */
-
-/**
- * \brief Return the version of the topology library.
- * \return A static string with the version number.
- */
-const char *snd_tplg_version(void);
 
 /**
  * \brief Create a new topology parser instance.
@@ -786,25 +489,10 @@ const char *snd_tplg_version(void);
 snd_tplg_t *snd_tplg_new(void);
 
 /**
- * \brief Create a new topology parser instance.
- * \return New topology parser instance
- */
-snd_tplg_t *snd_tplg_create(int flags);
-
-/**
  * \brief Free a topology parser instance.
  * \param tplg Topology parser instance
  */
 void snd_tplg_free(snd_tplg_t *tplg);
-
-/**
- * \brief Load topology from the text buffer.
- * \param tplg Topology instance.
- * \param buf Text buffer.
- * \param size Text buffer size in bytes.
- * \return Zero on success, otherwise a negative error code
- */
-int snd_tplg_load(snd_tplg_t *tplg, const char *buf, size_t size);
 
 /**
  * \brief Parse and build topology text file into binary file.
@@ -814,7 +502,7 @@ int snd_tplg_load(snd_tplg_t *tplg, const char *buf, size_t size);
  * \return Zero on success, otherwise a negative error code
  */
 int snd_tplg_build_file(snd_tplg_t *tplg, const char *infile,
-			const char *outfile);
+	const char *outfile);
 
 /**
  * \brief Enable verbose reporting of binary file output
@@ -840,7 +528,7 @@ struct snd_tplg_tlv_dbscale_template {
 	int mute;			/*!< is min dB value mute ? */
 };
 
-/** \struct snd_tplg_channel_elem
+/** \struct snd_tplg_channel_template
  * \brief Template type for single channel mapping.
  */
 struct snd_tplg_channel_elem {
@@ -883,10 +571,7 @@ struct snd_tplg_ctl_template {
 	const char *name;	/*!< Control name */
 	int access;		/*!< Control access */
 	struct snd_tplg_io_ops_template ops;	/*!< operations */
-	union {
-		struct snd_tplg_tlv_template *tlv; /*!< non NULL means we have TLV data */
-		struct snd_tplg_tlv_dbscale_template *tlv_scale; /*!< scale TLV data */
-	};
+	struct snd_tplg_tlv_template *tlv; /*!< non NULL means we have TLV data */
 };
 
 /** \struct snd_tplg_mixer_template
@@ -994,7 +679,6 @@ struct snd_tplg_stream_caps_template {
 	unsigned int period_size_max;	/*!< max period size bytes */
 	unsigned int buffer_size_min;	/*!< min buffer size bytes */
 	unsigned int buffer_size_max;	/*!< max buffer size bytes */
-	unsigned int sig_bits;		/*!< number of bits of content */
 };
 
 /** \struct snd_tplg_pcm_template
@@ -1009,77 +693,21 @@ struct snd_tplg_pcm_template {
 	unsigned int capture;	/*!< supports capture mode */
 	unsigned int compress;	/*!< 1 = compressed; 0 = PCM */
 	struct snd_tplg_stream_caps_template *caps[2]; /*!< playback & capture for DAI */
-	unsigned int flag_mask; /*!< bitmask of flags to configure */
-	unsigned int flags;     /*!< flag value SND_SOC_TPLG_LNK_FLGBIT_* */
-	struct snd_soc_tplg_private *priv;	/*!< private data */
 	int num_streams;	/*!< number of supported configs */
 	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
 };
 
- /** \struct snd_tplg_hw_config_template
- * \brief Template type to describe a physical link runtime supported
- * hardware config, i.e. hardware audio formats.
- */
-struct snd_tplg_hw_config_template {
-	int id;                         /*!< unique ID - - used to match */
-	unsigned int fmt;               /*!< SND_SOC_DAI_FORMAT_ format value */
-	unsigned char clock_gated;      /*!< SND_SOC_TPLG_DAI_CLK_GATE_ value */
-	unsigned char  invert_bclk;     /*!< 1 for inverted BCLK, 0 for normal */
-	unsigned char  invert_fsync;    /*!< 1 for inverted frame clock, 0 for normal */
-	unsigned char  bclk_provider;   /*!< SND_SOC_TPLG_BCLK_ value */
-	unsigned char  fsync_provider;  /*!< SND_SOC_TPLG_FSYNC_ value */
-	unsigned char  mclk_direction;  /*!< SND_SOC_TPLG_MCLK_ value */
-	unsigned short reserved;        /*!< for 32bit alignment */
-	unsigned int mclk_rate;	        /*!< MCLK or SYSCLK freqency in Hz */
-	unsigned int bclk_rate;	        /*!< BCLK freqency in Hz */
-	unsigned int fsync_rate;        /*!< frame clock in Hz */
-	unsigned int tdm_slots;         /*!< number of TDM slots in use */
-	unsigned int tdm_slot_width;    /*!< width in bits for each slot */
-	unsigned int tx_slots;          /*!< bit mask for active Tx slots */
-	unsigned int rx_slots;          /*!< bit mask for active Rx slots */
-	unsigned int tx_channels;       /*!< number of Tx channels */
-	unsigned int *tx_chanmap;       /*!< array of slot number */
-	unsigned int rx_channels;       /*!< number of Rx channels */
-	unsigned int *rx_chanmap;       /*!< array of slot number */
-};
-
-/** \struct snd_tplg_dai_template
- * \brief Template type for physical DAI.
- * It can be used to configure backend DAIs for DPCM.
- */
-struct snd_tplg_dai_template {
-	const char *dai_name;	/*!< DAI name */
-	unsigned int dai_id;	/*!< unique ID - used to match */
-	unsigned int playback;	/*!< supports playback mode */
-	unsigned int capture;	/*!< supports capture mode */
-	struct snd_tplg_stream_caps_template *caps[2]; /*!< playback & capture for DAI */
-	unsigned int flag_mask; /*!< bitmask of flags to configure */
-	unsigned int flags;	/*!< SND_SOC_TPLG_DAI_FLGBIT_* */
-	struct snd_soc_tplg_private *priv;	/*!< private data */
-
-};
-
 /** \struct snd_tplg_link_template
- * \brief Template type for physical DAI Links.
+ * \brief Template type for BE and CC DAI Links.
  */
 struct snd_tplg_link_template {
-	const char *name;	/*!< link name, used to match */
-	int id;	/*!< unique ID - used to match with existing physical links */
-	const char *stream_name;        /*!< link stream name, used to match */
-
+	const char *name;	/*!< link name */
+	int id;	/*!< unique ID - used to match with existing BE and CC links */
 	int num_streams;	/*!< number of configs */
-	struct snd_tplg_stream_template *stream;       /*!< supported configs */
-
-	struct snd_tplg_hw_config_template *hw_config; /*!< supported HW configs */
-	int num_hw_configs;		/*!< number of hw configs */
-	int default_hw_config_id;       /*!< default hw config ID for init */
-
-	unsigned int flag_mask;         /*!< bitmask of flags to configure */
-	unsigned int flags;             /*!< SND_SOC_TPLG_LNK_FLGBIT_* flag value */
-	struct snd_soc_tplg_private *priv; /*!< private data */
+	struct snd_tplg_stream_template stream[0]; /*!< supported configs */
 };
 
-/** \struct snd_tplg_obj_template_t
+/** \struct snd_tplg_obj_template
  * \brief Generic Template Object
  */
 typedef struct snd_tplg_obj_template {
@@ -1094,8 +722,7 @@ typedef struct snd_tplg_obj_template {
 		struct snd_tplg_enum_template *enum_ctl;	/*!< Enum control */
 		struct snd_tplg_graph_template *graph;		/*!< Graph elements */
 		struct snd_tplg_pcm_template *pcm;		/*!< PCM elements */
-		struct snd_tplg_link_template *link;		/*!< physical DAI Links */
-		struct snd_tplg_dai_template *dai;		/*!< Physical DAI */
+		struct snd_tplg_link_template *link;		/*!< BE and CC Links */
 	};
 } snd_tplg_obj_template_t;
 
@@ -1116,15 +743,6 @@ int snd_tplg_add_object(snd_tplg_t *tplg, snd_tplg_obj_template_t *t);
 int snd_tplg_build(snd_tplg_t *tplg, const char *outfile);
 
 /**
- * \brief Build all registered topology data into memory.
- * \param tplg Topology instance.
- * \param bin Binary topology output buffer (malloc).
- * \param size Binary topology output buffer size in bytes.
- * \return Zero on success, otherwise a negative error code
- */
-int snd_tplg_build_bin(snd_tplg_t *tplg, void **bin, size_t *size);
-
-/**
  * \brief Attach private data to topology manifest.
  * \param tplg Topology instance.
  * \param data Private data.
@@ -1141,38 +759,7 @@ int snd_tplg_set_manifest_data(snd_tplg_t *tplg, const void *data, int len);
  */
 int snd_tplg_set_version(snd_tplg_t *tplg, unsigned int version);
 
-/*
- * Flags for the snd_tplg_save()
- */
-#define SND_TPLG_SAVE_SORT	(1<<0)	/*!< sort identifiers */
-#define SND_TPLG_SAVE_GROUPS	(1<<1)	/*!< create the structure by group index */
-#define SND_TPLG_SAVE_NOCHECK	(1<<16)	/*!< unchecked output for debugging */
-
-/**
- * \brief Save the topology to the text configuration string.
- * \param tplg Topology instance.
- * \param dst A pointer to string with result (malloc).
- * \param flags save mode
- * \return Zero on success, otherwise a negative error code
- *
- * Valid flags are
- *    - SND_TPLG_SAVE_SORT
- *    - SND_TPLG_SAVE_GROUPS
- *    - SND_TPLG_SAVE_NOCHECK
- */
-int snd_tplg_save(snd_tplg_t *tplg, char **dst, int flags);
-
-/**
- * \brief Decode the binary topology contents.
- * \param tplg Topology instance.
- * \param bin Binary topology input buffer.
- * \param size Binary topology input buffer size.
- * \param dflags - not used, must be set to 0.
- * \return Zero on success, otherwise a negative error code
- */
-int snd_tplg_decode(snd_tplg_t *tplg, void *bin, size_t size, int dflags);
-
-/** \} */
+/* \} */
 
 #ifdef __cplusplus
 }

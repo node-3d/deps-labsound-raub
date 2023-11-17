@@ -20,7 +20,7 @@
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this library; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
 #ifndef __ALSA_PCM_EXTERNAL_H
@@ -59,7 +59,7 @@ int SND_PCM_PLUGIN_ENTRY(plugin) (snd_pcm_t **pcmp, const char *name,\
 #include "pcm_extplug.h"
 
 int snd_pcm_parse_control_id(snd_config_t *conf, snd_ctl_elem_id_t *ctl_id, int *cardp,
-			     int *cchannelsp, int *hwctlp) __attribute__((deprecated));
+			     int *cchannelsp, int *hwctlp);
 
 /** \} */
 

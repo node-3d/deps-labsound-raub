@@ -21,7 +21,7 @@
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this library; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
 
@@ -71,11 +71,6 @@ struct snd_dlsym_link {
 
 extern struct snd_dlsym_link *snd_dlsym_start;
 
-#ifndef __STRING
-/** \brief Return 'x' argument as string */
-#define __STRING(x)     #x
-#endif
-
 /** \hideinitializer \brief Helper macro for #SND_DLSYM_BUILD_VERSION. */
 #define __SND_DLSYM_VERSION(prefix, name, version) _ ## prefix ## name ## version
 /**
@@ -87,18 +82,22 @@ extern struct snd_dlsym_link *snd_dlsym_start;
   void __SND_DLSYM_VERSION(snd_dlsym_constructor_, name, version) (void) __attribute__ ((constructor)); \
   void __SND_DLSYM_VERSION(snd_dlsym_constructor_, name, version) (void) { \
     __SND_DLSYM_VERSION(snd_dlsym_, name, version).next = snd_dlsym_start; \
-    __SND_DLSYM_VERSION(snd_dlsym_, name, version).dlsym_name = __STRING(name); \
+    __SND_DLSYM_VERSION(snd_dlsym_, name, version).dlsym_name = # name; \
     __SND_DLSYM_VERSION(snd_dlsym_, name, version).dlsym_ptr = (void *)&name; \
     snd_dlsym_start = &__SND_DLSYM_VERSION(snd_dlsym_, name, version); \
   }
 
 #endif
 
+#ifndef __STRING
+/** \brief Return 'x' argument as string */
+#define __STRING(x)     #x
+#endif
+
 /** \brief Returns the version of a dynamic symbol as a string. */
 #define SND_DLSYM_VERSION(version) __STRING(version)
 
-int snd_dlpath(char *path, size_t path_len, const char *name);
-void *snd_dlopen(const char *file, int mode, char *errbuf, size_t errbuflen);
+void *snd_dlopen(const char *file, int mode);
 void *snd_dlsym(void *handle, const char *name, const char *version);
 int snd_dlclose(void *handle);
 

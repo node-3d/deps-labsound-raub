@@ -21,14 +21,12 @@
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this library; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
 
 #ifndef __ALSA_OUTPUT_H
 #define __ALSA_OUTPUT_H
-
-#include <stdarg.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -67,7 +65,6 @@ int snd_output_stdio_open(snd_output_t **outputp, const char *file, const char *
 int snd_output_stdio_attach(snd_output_t **outputp, FILE *fp, int _close);
 int snd_output_buffer_open(snd_output_t **outputp);
 size_t snd_output_buffer_string(snd_output_t *output, char **buf);
-size_t snd_output_buffer_steal(snd_output_t *output, char **buf);
 int snd_output_close(snd_output_t *output);
 int snd_output_printf(snd_output_t *output, const char *format, ...)
 #ifndef DOC_HIDDEN

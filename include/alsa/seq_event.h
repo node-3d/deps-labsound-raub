@@ -21,7 +21,7 @@
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this library; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
 
@@ -225,7 +225,6 @@ typedef union snd_seq_timestamp {
 #define SND_SEQ_PRIORITY_HIGH		(1<<4)	/**< event should be processed before others */
 #define SND_SEQ_PRIORITY_MASK		(1<<4)	/**< mask for priority bits */
 
-#define SND_SEQ_EVENT_UMP		(1<<5)	/**< UMP packet event */
 
 /** Note event */
 typedef struct snd_seq_ev_note {
@@ -292,19 +291,6 @@ typedef struct snd_seq_ev_queue_control {
 	} param;				/**< data value union */
 } snd_seq_ev_queue_control_t;
 
-/** Sequencer event data */
-typedef union snd_seq_event_data {
-	snd_seq_ev_note_t note;		/**< note information */
-	snd_seq_ev_ctrl_t control;	/**< MIDI control information */
-	snd_seq_ev_raw8_t raw8;		/**< raw8 data */
-	snd_seq_ev_raw32_t raw32;	/**< raw32 data */
-	snd_seq_ev_ext_t ext;		/**< external data */
-	snd_seq_ev_queue_control_t queue; /**< queue control */
-	snd_seq_timestamp_t time;	/**< timestamp */
-	snd_seq_addr_t addr;		/**< address */
-	snd_seq_connect_t connect;	/**< connect information */
-	snd_seq_result_t result;	/**< operation result code */
-} snd_seq_event_data_t;
 
 /** Sequencer event */
 typedef struct snd_seq_event {
@@ -318,24 +304,20 @@ typedef struct snd_seq_event {
 	snd_seq_addr_t source;		/**< source address */
 	snd_seq_addr_t dest;		/**< destination address */
 
-	snd_seq_event_data_t data;	/**< event data... */
+	union {
+		snd_seq_ev_note_t note;		/**< note information */
+		snd_seq_ev_ctrl_t control;	/**< MIDI control information */
+		snd_seq_ev_raw8_t raw8;		/**< raw8 data */
+		snd_seq_ev_raw32_t raw32;	/**< raw32 data */
+		snd_seq_ev_ext_t ext;		/**< external data */
+		snd_seq_ev_queue_control_t queue; /**< queue control */
+		snd_seq_timestamp_t time;	/**< timestamp */
+		snd_seq_addr_t addr;		/**< address */
+		snd_seq_connect_t connect;	/**< connect information */
+		snd_seq_result_t result;	/**< operation result code */
+	} data;				/**< event data... */
 } snd_seq_event_t;
 
-/** UMP sequencer event; compatible with legacy sequencer event */
-typedef struct snd_seq_ump_event {
-	snd_seq_event_type_t type;	/**< event type */
-	unsigned char flags;		/**< event flags */
-	unsigned char tag;		/**< tag */
-	unsigned char queue;		/**< schedule queue */
-	snd_seq_timestamp_t time;	/**< schedule time */
-	snd_seq_addr_t source;		/**< source address */
-	snd_seq_addr_t dest;		/**< destination address */
-
-	union {
-		snd_seq_event_data_t data;	/**< (shared) legacy data */
-		unsigned int ump[4];		/**< UMP data bytes */
-	};
-} snd_seq_ump_event_t;
 
 /** \} */
 

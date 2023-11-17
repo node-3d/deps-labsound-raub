@@ -21,7 +21,7 @@
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this library; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
 
@@ -47,7 +47,7 @@ typedef struct _snd_mixer_elem snd_mixer_elem_t;
 
 /** 
  * \brief Mixer callback function
- * \param ctl Mixer handle
+ * \param mixer Mixer handle
  * \param mask event mask
  * \param elem related mixer element (if any)
  * \return 0 on success otherwise a negative error code
@@ -304,7 +304,6 @@ const char *snd_mixer_selem_id_get_name(const snd_mixer_selem_id_t *obj);
 unsigned int snd_mixer_selem_id_get_index(const snd_mixer_selem_id_t *obj);
 void snd_mixer_selem_id_set_name(snd_mixer_selem_id_t *obj, const char *val);
 void snd_mixer_selem_id_set_index(snd_mixer_selem_id_t *obj, unsigned int val);
-int snd_mixer_selem_id_parse(snd_mixer_selem_id_t *dst, const char *str);
 
 /** \} */
 

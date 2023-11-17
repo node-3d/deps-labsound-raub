@@ -15,7 +15,7 @@
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this library; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
 
@@ -34,9 +34,6 @@
 #include <endian.h>
 #elif defined(HAVE_SYS_ENDIAN_H)
 #include <sys/endian.h>
-#else
-#error Header defining endianness not defined
-#endif
 #ifndef __BYTE_ORDER
 #define __BYTE_ORDER BYTE_ORDER
 #endif
@@ -46,16 +43,15 @@
 #ifndef __BIG_ENDIAN
 #define __BIG_ENDIAN BIG_ENDIAN
 #endif
+#else
+#error Header defining endianness not defined
+#endif
 #include <stdarg.h>
-#include <poll.h>
+#include <sys/poll.h>
 #include <sys/types.h>
 #include <errno.h>
-#if defined(__linux__)
 #include <linux/types.h>
 #include <linux/ioctl.h>
-#else
-#include "type_compat.h"
-#endif
 
 #ifdef SUPPORT_RESMGR
 #include <resmgr.h>
@@ -69,26 +65,11 @@
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 #define SND_LITTLE_ENDIAN
 #define SNDRV_LITTLE_ENDIAN
-#define SNDRV_LITTLE_ENDIAN_BITFIELD
 #elif __BYTE_ORDER == __BIG_ENDIAN
 #define SND_BIG_ENDIAN
 #define SNDRV_BIG_ENDIAN
-#define SNDRV_BIG_ENDIAN_BITFIELD
 #else
 #error "Unsupported endian..."
-#endif
-
-#ifndef HAVE_LFS
-#define stat64 stat
-#define lstat64 lstat
-#define dirent64 dirent
-#define readdir64 readdir
-#define scandir64 scandir
-#define versionsort64 versionsort
-#define alphasort64 alphasort
-#define ino64_t ino_t
-#define fstat64 fstat
-#define stat64 stat
 #endif
 
 #define _snd_config_iterator list_head
@@ -171,7 +152,7 @@
 #undef snd_ctl_elem_type_t
 #undef snd_ctl_elem_iface_t
 
-#include "asoundef.h"
+#include <sound/asoundef.h>
 #include "alsa-symbols.h"
 #include "version.h"
 #include "global.h"
@@ -182,7 +163,6 @@
 #include "pcm.h"
 #include "pcm_plugin.h"
 #include "rawmidi.h"
-#include "ump.h"
 #include "timer.h"
 #include "hwdep.h"
 #include "control.h"
@@ -196,9 +176,7 @@
 #define snd_seq_real_time	sndrv_seq_real_time
 #define snd_seq_timestamp	sndrv_seq_timestamp
 #define snd_seq_event_type_t	sndrv_seq_event_type_t
-#define snd_seq_event_data	sndrv_seq_event_data
 #define snd_seq_event		sndrv_seq_event
-#define snd_seq_ump_event	sndrv_seq_ump_event
 #define snd_seq_connect		sndrv_seq_connect
 #define snd_seq_ev_note		sndrv_seq_ev_note
 #define snd_seq_ev_ctrl		sndrv_seq_ev_ctrl
@@ -250,18 +228,10 @@ size_t page_align(size_t size);
 size_t page_size(void);
 size_t page_ptr(size_t object_offset, size_t object_size, size_t *offset, size_t *mmap_offset);
 
-#define safe_strtoll_base _snd_safe_strtoll_base
-int _snd_safe_strtoll_base(const char *str, long long *val, int base);
-static inline int safe_strtoll(const char *str, long long *val) { return safe_strtoll_base(str, val, 0); }
-#define safe_strtol_base _snd_safe_strtol_base
-int _snd_safe_strtol_base(const char *str, long *val, int base);
-static inline int safe_strtol(const char *str, long *val) { return safe_strtol_base(str, val, 0); }
-#define safe_strtod _snd_safe_strtod
-int _snd_safe_strtod(const char *str, double *val);
+int safe_strtol(const char *str, long *val);
 
 int snd_send_fd(int sock, void *data, size_t len, int fd);
 int snd_receive_fd(int sock, void *data, size_t len, int *fd);
-size_t snd_strlcpy(char *dst, const char *src, size_t size);
 
 /*
  * error messages
@@ -269,8 +239,8 @@ size_t snd_strlcpy(char *dst, const char *src, size_t size);
 #ifndef NDEBUG
 #define CHECK_SANITY(x) x
 extern snd_lib_error_handler_t snd_err_msg;
-#define SNDMSG(args...) snd_err_msg(__FILE__, __LINE__, __func__, 0, ##args)
-#define SYSMSG(args...) snd_err_msg(__FILE__, __LINE__, __func__, errno, ##args)
+#define SNDMSG(args...) snd_err_msg(__FILE__, __LINE__, __FUNCTION__, 0, ##args)
+#define SYSMSG(args...) snd_err_msg(__FILE__, __LINE__, __FUNCTION__, errno, ##args)
 #else
 #define CHECK_SANITY(x) 0 /* not evaluated */
 #define SNDMSG(args...) /* nop */
@@ -345,18 +315,14 @@ static inline int snd_open_device(const char *filename, int fmode)
 			fd = rsm_open_device(filename, fmode);
 	}
 #endif
-#ifndef O_CLOEXEC
 	if (fd >= 0)
 		fcntl(fd, F_SETFD, FD_CLOEXEC);
-#endif
 	return fd;
 }
 
 /* make local functions really local */
 #define snd_dlobj_cache_get \
 	snd1_dlobj_cache_get
-#define snd_dlobj_cache_get2 \
-	snd1_dlobj_cache_get2
 #define snd_dlobj_cache_put \
 	snd1_dlobj_cache_put
 #define snd_dlobj_cache_cleanup \
@@ -370,7 +336,6 @@ static inline int snd_open_device(const char *filename, int fmode)
 
 /* dlobj cache */
 void *snd_dlobj_cache_get(const char *lib, const char *name, const char *version, int verbose);
-void *snd_dlobj_cache_get2(const char *lib, const char *name, const char *version, int verbose);
 int snd_dlobj_cache_put(void *open_func);
 void snd_dlobj_cache_cleanup(void);
 
@@ -385,35 +350,11 @@ int snd_config_search_alias_hooks(snd_config_t *config,
 
 int _snd_conf_generic_id(const char *id);
 
-int _snd_config_load_with_include(snd_config_t *config, snd_input_t *in,
-				  int override, const char * const *default_include_path);
-
 /* convenience macros */
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
 
 #define container_of(ptr, type, member) ({                      \
 	 const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
 	(type *)( (char *)__mptr - offsetof(type,member) );})
-
-#ifdef INTERNAL
-void *INTERNAL(snd_dlopen)(const char *name, int mode, char *errbuf, size_t errbuflen);
-#endif
-
-#ifdef BUILD_UCM
-
-const char *uc_mgr_alibcfg_by_device(snd_config_t **config, const char *name);
-
-static inline int _snd_is_ucm_device(const char *name)
-{
-	return name && name[0] == '_' && name[1] == 'u' && name[2] == 'c' && name[3] == 'm';
-}
-
-#else
-
-static inline const char *uc_mgr_alibcfg_by_device(snd_config_t **config, const char *name) { return NULL; }
-static inline int _snd_is_ucm_device(const char *name) { return 0; }
-
-
-#endif
 
 #endif

@@ -22,7 +22,7 @@
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this library; if not, write to the Free Software
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  */
 
@@ -32,8 +32,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <stdint.h>
 
 /**
  *  \defgroup PCM PCM Interface
@@ -175,14 +173,6 @@ typedef enum _snd_pcm_format {
 	SND_PCM_FORMAT_MPEG,
 	/** GSM */
 	SND_PCM_FORMAT_GSM,
-	/** Signed 20bit Little Endian in 4bytes format, LSB justified */
-	SND_PCM_FORMAT_S20_LE,
-	/** Signed 20bit Big Endian in 4bytes format, LSB justified */
-	SND_PCM_FORMAT_S20_BE,
-	/** Unsigned 20bit Little Endian in 4bytes format, LSB justified */
-	SND_PCM_FORMAT_U20_LE,
-	/** Unsigned 20bit Big Endian in 4bytes format, LSB justified */
-	SND_PCM_FORMAT_U20_BE,
 	/** Special */
 	SND_PCM_FORMAT_SPECIAL = 31,
 	/** Signed 24bit Little Endian in 3bytes format */
@@ -247,11 +237,7 @@ typedef enum _snd_pcm_format {
 	/** Float 64 bit CPU endian */
 	SND_PCM_FORMAT_FLOAT64 = SND_PCM_FORMAT_FLOAT64_LE,
 	/** IEC-958 CPU Endian */
-	SND_PCM_FORMAT_IEC958_SUBFRAME = SND_PCM_FORMAT_IEC958_SUBFRAME_LE,
-	/** Signed 20bit in 4bytes format, LSB justified, CPU Endian */
-	SND_PCM_FORMAT_S20 = SND_PCM_FORMAT_S20_LE,
-	/** Unsigned 20bit in 4bytes format, LSB justified, CPU Endian */
-	SND_PCM_FORMAT_U20 = SND_PCM_FORMAT_U20_LE,
+	SND_PCM_FORMAT_IEC958_SUBFRAME = SND_PCM_FORMAT_IEC958_SUBFRAME_LE
 #elif __BYTE_ORDER == __BIG_ENDIAN
 	/** Signed 16 bit CPU endian */
 	SND_PCM_FORMAT_S16 = SND_PCM_FORMAT_S16_BE,
@@ -270,11 +256,7 @@ typedef enum _snd_pcm_format {
 	/** Float 64 bit CPU endian */
 	SND_PCM_FORMAT_FLOAT64 = SND_PCM_FORMAT_FLOAT64_BE,
 	/** IEC-958 CPU Endian */
-	SND_PCM_FORMAT_IEC958_SUBFRAME = SND_PCM_FORMAT_IEC958_SUBFRAME_BE,
-	/** Signed 20bit in 4bytes format, LSB justified, CPU Endian */
-	SND_PCM_FORMAT_S20 = SND_PCM_FORMAT_S20_BE,
-	/** Unsigned 20bit in 4bytes format, LSB justified, CPU Endian */
-	SND_PCM_FORMAT_U20 = SND_PCM_FORMAT_U20_BE,
+	SND_PCM_FORMAT_IEC958_SUBFRAME = SND_PCM_FORMAT_IEC958_SUBFRAME_BE
 #else
 #error "Unknown endian"
 #endif
@@ -307,9 +289,7 @@ typedef enum _snd_pcm_state {
 	SND_PCM_STATE_SUSPENDED,
 	/** Hardware is disconnected */
 	SND_PCM_STATE_DISCONNECTED,
-	SND_PCM_STATE_LAST = SND_PCM_STATE_DISCONNECTED,
-	/** Private - used internally in the library - do not use*/
-	SND_PCM_STATE_PRIVATE1 = 1024
+	SND_PCM_STATE_LAST = SND_PCM_STATE_DISCONNECTED
 } snd_pcm_state_t;
 
 /** PCM start mode */
@@ -343,7 +323,6 @@ typedef enum _snd_pcm_tstamp {
 	SND_PCM_TSTAMP_LAST = SND_PCM_TSTAMP_ENABLE
 } snd_pcm_tstamp_t;
 
-/** PCM timestamp type */
 typedef enum _snd_pcm_tstamp_type {
 	SND_PCM_TSTAMP_TYPE_GETTIMEOFDAY = 0,	/**< gettimeofday equivalent */
 	SND_PCM_TSTAMP_TYPE_MONOTONIC,	/**< posix_clock_monotonic equivalent */
@@ -351,37 +330,24 @@ typedef enum _snd_pcm_tstamp_type {
 	SND_PCM_TSTAMP_TYPE_LAST = SND_PCM_TSTAMP_TYPE_MONOTONIC_RAW,
 } snd_pcm_tstamp_type_t;
 
-/** PCM audio timestamp type */
-typedef enum _snd_pcm_audio_tstamp_type {
-	/**
-	 * first definition for backwards compatibility only,
-	 * maps to wallclock/link time for HDAudio playback and DEFAULT/DMA time for everything else
-	 */
-	SND_PCM_AUDIO_TSTAMP_TYPE_COMPAT = 0,
-	SND_PCM_AUDIO_TSTAMP_TYPE_DEFAULT = 1,           /**< DMA time, reported as per hw_ptr */
-	SND_PCM_AUDIO_TSTAMP_TYPE_LINK = 2,	           /**< link time reported by sample or wallclock counter, reset on startup */
-	SND_PCM_AUDIO_TSTAMP_TYPE_LINK_ABSOLUTE = 3,	   /**< link time reported by sample or wallclock counter, not reset on startup */
-	SND_PCM_AUDIO_TSTAMP_TYPE_LINK_ESTIMATED = 4,    /**< link time estimated indirectly */
-	SND_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED = 5, /**< link time synchronized with system time */
-	SND_PCM_AUDIO_TSTAMP_TYPE_LAST = SND_PCM_AUDIO_TSTAMP_TYPE_LINK_SYNCHRONIZED
-} snd_pcm_audio_tstamp_type_t;
-
-/** PCM audio timestamp config */
 typedef struct _snd_pcm_audio_tstamp_config {
 	/* 5 of max 16 bits used */
-	unsigned int type_requested:4; /**< requested audio tstamp type */
-	unsigned int report_delay:1; /**< add total delay to A/D or D/A */
+	unsigned int type_requested:4;
+	unsigned int report_delay:1; /* add total delay to A/D or D/A */
 } snd_pcm_audio_tstamp_config_t;
 
-/** PCM audio timestamp report */
 typedef struct _snd_pcm_audio_tstamp_report {
 	/* 6 of max 16 bits used for bit-fields */
 
-	unsigned int valid:1; /**< for backwards compatibility */
-	unsigned int actual_type:4; /**< actual type if hardware could not support requested timestamp */
+	/* for backwards compatibility */
+	unsigned int valid:1;
 
-	unsigned int accuracy_report:1; /**< 0 if accuracy unknown, 1 if accuracy field is valid */
-	unsigned int accuracy; /**< up to 4.29s in ns units, will be packed in separate field  */
+	/* actual type if hardware could not support requested timestamp */
+	unsigned int actual_type:4;
+
+	/* accuracy represented in ns units */
+	unsigned int accuracy_report:1; /* 0 if accuracy unknown, 1 if accuracy field is valid */
+	unsigned int accuracy; /* up to 4.29s, will be packed in separate field  */
 } snd_pcm_audio_tstamp_report_t;
 
 /** Unsigned frames quantity */
@@ -393,8 +359,6 @@ typedef long snd_pcm_sframes_t;
 #define SND_PCM_NONBLOCK		0x00000001
 /** Async notification (flag for open mode) \hideinitializer */
 #define SND_PCM_ASYNC			0x00000002
-/** Return EINTR instead blocking (wait operation) */
-#define SND_PCM_EINTR			0x00000080
 /** In an abort state (internal, not allowed for open) */
 #define SND_PCM_ABORT			0x00008000
 /** Disable automatic (but not forced!) rate resamplinig */
@@ -499,13 +463,6 @@ typedef union _snd_pcm_sync_id {
 	/** 32-bit ID */
 	unsigned int id32[4];
 } snd_pcm_sync_id_t;
-
-/** Infinite wait for snd_pcm_wait() */
-#define SND_PCM_WAIT_INFINITE		(-1)
-/** Wait for next i/o in snd_pcm_wait() */
-#define SND_PCM_WAIT_IO			(-10001)
-/** Wait for drain in snd_pcm_wait() */
-#define SND_PCM_WAIT_DRAIN		(-10002)
 
 /** #SND_PCM_TYPE_METER scope handle */
 typedef struct _snd_pcm_scope snd_pcm_scope_t;
@@ -731,7 +688,6 @@ int snd_pcm_hw_params_is_half_duplex(const snd_pcm_hw_params_t *params);
 int snd_pcm_hw_params_is_joint_duplex(const snd_pcm_hw_params_t *params);
 int snd_pcm_hw_params_can_sync_start(const snd_pcm_hw_params_t *params);
 int snd_pcm_hw_params_can_disable_period_wakeup(const snd_pcm_hw_params_t *params);
-int snd_pcm_hw_params_is_perfect_drain(const snd_pcm_hw_params_t *params);
 int snd_pcm_hw_params_supports_audio_wallclock_ts(const snd_pcm_hw_params_t *params); /* deprecated, use audio_ts_type */
 int snd_pcm_hw_params_supports_audio_ts_type(const snd_pcm_hw_params_t *params, int type);
 int snd_pcm_hw_params_get_rate_numden(const snd_pcm_hw_params_t *params,
@@ -831,8 +787,6 @@ int snd_pcm_hw_params_set_export_buffer(snd_pcm_t *pcm, snd_pcm_hw_params_t *par
 int snd_pcm_hw_params_get_export_buffer(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
 int snd_pcm_hw_params_set_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val);
 int snd_pcm_hw_params_get_period_wakeup(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
-int snd_pcm_hw_params_set_drain_silence(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int val);
-int snd_pcm_hw_params_get_drain_silence(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val);
 
 int snd_pcm_hw_params_get_period_time(const snd_pcm_hw_params_t *params, unsigned int *val, int *dir);
 int snd_pcm_hw_params_get_period_time_min(const snd_pcm_hw_params_t *params, unsigned int *val, int *dir);
@@ -1154,10 +1108,10 @@ int snd_pcm_format_width(snd_pcm_format_t format);			/* in bits */
 int snd_pcm_format_physical_width(snd_pcm_format_t format);		/* in bits */
 snd_pcm_format_t snd_pcm_build_linear_format(int width, int pwidth, int unsignd, int big_endian);
 ssize_t snd_pcm_format_size(snd_pcm_format_t format, size_t samples);
-uint8_t snd_pcm_format_silence(snd_pcm_format_t format);
-uint16_t snd_pcm_format_silence_16(snd_pcm_format_t format);
-uint32_t snd_pcm_format_silence_32(snd_pcm_format_t format);
-uint64_t snd_pcm_format_silence_64(snd_pcm_format_t format);
+u_int8_t snd_pcm_format_silence(snd_pcm_format_t format);
+u_int16_t snd_pcm_format_silence_16(snd_pcm_format_t format);
+u_int32_t snd_pcm_format_silence_32(snd_pcm_format_t format);
+u_int64_t snd_pcm_format_silence_64(snd_pcm_format_t format);
 int snd_pcm_format_set_silence(snd_pcm_format_t format, void *buf, unsigned int samples);
 
 snd_pcm_sframes_t snd_pcm_bytes_to_frames(snd_pcm_t *pcm, ssize_t bytes);
@@ -1175,38 +1129,6 @@ int snd_pcm_area_copy(const snd_pcm_channel_area_t *dst_channel, snd_pcm_uframes
 int snd_pcm_areas_copy(const snd_pcm_channel_area_t *dst_channels, snd_pcm_uframes_t dst_offset,
 		       const snd_pcm_channel_area_t *src_channels, snd_pcm_uframes_t src_offset,
 		       unsigned int channels, snd_pcm_uframes_t frames, snd_pcm_format_t format);
-int snd_pcm_areas_copy_wrap(const snd_pcm_channel_area_t *dst_channels,
-			    snd_pcm_uframes_t dst_offset,
-			    const snd_pcm_uframes_t dst_size,
-			    const snd_pcm_channel_area_t *src_channels,
-			    snd_pcm_uframes_t src_offset,
-			    const snd_pcm_uframes_t src_size,
-			    const unsigned int channels,
-			    snd_pcm_uframes_t frames,
-			    const snd_pcm_format_t format);
-
-/**
- * \brief get the address of the given PCM channel area
- * \param area PCM channel area
- * \param offset Offset in frames
- *
- * Returns the pointer corresponding to the given offset on the channel area.
- */
-static inline void *snd_pcm_channel_area_addr(const snd_pcm_channel_area_t *area, snd_pcm_uframes_t offset)
-{
-	return (char *)area->addr + (area->first + area->step * offset) / 8;
-}
-
-/**
- * \brief get the step size of the given PCM channel area in bytes
- * \param area PCM channel area
- *
- * Returns the step size in bytes from the given channel area.
- */
-static inline unsigned int snd_pcm_channel_area_step(const snd_pcm_channel_area_t *area)
-{
-	return area->step / 8;
-}
 
 /** \} */
 

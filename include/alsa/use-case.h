@@ -21,7 +21,7 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
  *
  *  Copyright (C) 2008-2010 SlimLogic Ltd
  *  Copyright (C) 2010 Wolfson Microelectronics PLC
@@ -41,8 +41,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <alsa/asoundlib.h>
 
 /**
  *  \defgroup ucm Use Case Interface
@@ -86,7 +84,7 @@ extern "C" {
  *  + Get the TQ parameter for each use case verb, use case device and
  *     modifier.
  *  + Get the ALSA master playback and capture volume/switch kcontrols
- *     or mixer elements for each use case.
+ *     for each use case.
  */
 
 
@@ -114,25 +112,10 @@ extern "C" {
  *
  * Physical system devices the render and capture audio. Devices can be OR'ed
  * together to support audio on simultaneous devices.
- *
- * If multiple devices with the same name exists, the number suffixes should
- * be added to these names like HDMI1,HDMI2,HDMI3 etc. No number gaps are
- * allowed. The names with numbers must be continuous. It is allowed to put
- * a whitespace between name and index (like 'Line 1') for the better
- * readability. The device names 'Line 1' and 'Line1' are equal for
- * this purpose.
- *
- * If EnableSequence/DisableSequence controls independent paths in the hardware
- * it is also recommended to split playback and capture UCM devices and use
- * the number suffixes. Example use case: Use the integrated microphone
- * in the laptop instead the microphone in headphones.
- *
- * The preference of the devices is determined by the priority value.
  */
 #define SND_USE_CASE_DEV_NONE		"None"		/**< None Device */
 #define SND_USE_CASE_DEV_SPEAKER	"Speaker"	/**< Speaker Device */
 #define SND_USE_CASE_DEV_LINE		"Line"		/**< Line Device */
-#define SND_USE_CASE_DEV_MIC            "Mic"           /**< Microphone Device */
 #define SND_USE_CASE_DEV_HEADPHONES	"Headphones"	/**< Headphones Device */
 #define SND_USE_CASE_DEV_HEADSET	"Headset"	/**< Headset Device */
 #define SND_USE_CASE_DEV_HANDSET	"Handset"	/**< Handset Device */
@@ -140,8 +123,6 @@ extern "C" {
 #define SND_USE_CASE_DEV_EARPIECE	"Earpiece"	/**< Earpiece Device */
 #define SND_USE_CASE_DEV_SPDIF		"SPDIF"		/**< SPDIF Device */
 #define SND_USE_CASE_DEV_HDMI		"HDMI"		/**< HDMI Device */
-#define SND_USE_CASE_DEV_USB		"USB"		/**< USB Device (multifunctional) */
-#define SND_USE_CASE_DEV_DIRECT		"Direct"	/**< Direct Device (no channel remapping), (e.g. ProAudio usage) */
 /* add new devices to end of list */
 
 
@@ -150,13 +131,6 @@ extern "C" {
  *
  * The use case modifier allows runtime configuration changes to deal with
  * asynchronous events.
- *
- * If multiple modifiers with the same name exists, the number suffixes should
- * be added to these names like 'Echo Reference 1','Echo Reference 2' etc.
- * No number gaps are allowed. The names with numbers must be continuous.
- * It is allowed to put a whitespace between name and index for the better
- * readability. The modifier names 'Something 1' and 'Something1' are equal
- * for this purpose.
  *
  * e.g. to record a voice call :-
  *  1. Set verb to SND_USE_CASE_VERB_VOICECALL (for voice call)
@@ -218,22 +192,20 @@ int snd_use_case_free_list(const char *list[], int items);
  * \return Number of list entries if success, otherwise a negative error code
  *
  * Defined identifiers:
- *   - NULL			- get card list
- *				 (in pair cardname+comment)
- *   - _verbs			- get verb list
- *				  (in pair verb+comment)
- *   - _devices[/{verb}]	- get list of supported devices
- *				  (in pair device+comment)
- *   - _modifiers[/{verb}]	- get list of supported modifiers
- *				  (in pair modifier+comment)
- *   - TQ[/{verb}]		- get list of TQ identifiers
- *   - _enadevs			- get list of enabled devices
- *   - _enamods			- get list of enabled modifiers
+ *   NULL 		- get card list
+ *			  (in pair cardname+comment)
+ *   _verbs		- get verb list
+ *			  (in pair verb+comment)
+ *   _devices[/{verb}]	- get list of supported devices
+ *			  (in pair device+comment)
+ *   _modifiers[/{verb}]- get list of supported modifiers
+ *			  (in pair modifier+comment)
+ *   TQ[/{verb}]	- get list of TQ identifiers
+ *   _enadevs		- get list of enabled devices
+ *   _enamods		- get list of enabled modifiers
  *
- *   - _identifiers/{modifier}|{device}[/{verb}]     - list of value identifiers
- *   - _supporteddevs/{modifier}|{device}[/{verb}]   - list of supported devices
- *   - _conflictingdevs/{modifier}|{device}[/{verb}] - list of conflicting devices
- *
+ *   _supporteddevs/{modifier}|{device}[/{verb}]   - list of supported devices
+ *   _conflictingdevs/{modifier}|{device}[/{verb}] - list of conflicting devices
  *   Note that at most one of the supported/conflicting devs lists has
  *   any entries, and when neither is present, all devices are supported.
  *
@@ -257,9 +229,6 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
  * Known identifiers:
  *   - NULL 		- return current card
  *   - _verb		- return current verb
- *   - _file		- return configuration file loaded for current card
- *   - _alibcfg		- return private alsa-lib's configuration for current card
- *   - _alibpref	- return private alsa-lib's configuration device prefix for current card
  *
  *   - [=]{NAME}[/[{modifier}|{/device}][/{verb}]]
  *                      - value identifier {NAME}
@@ -286,17 +255,8 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
  *                              "=Variable/Modifier/Verb"
  *
  * Recommended names for values:
- *   - Linked
- *      - value "True" or "1" (case insensitive)
- *      - this is a linked UCM card
- *      - don't use this UCM card, because the other UCM card refers devices
- *      - valid only in the ValueDefaults section (query '=Linked')
  *   - TQ
  *      - Tone Quality
- *   - Priority
- *      - priority value (1-10000), higher value means higher priority
- *      - valid only for verbs
- *      - for devices - PlaybackPriority and CapturePriority
  *   - PlaybackPCM
  *      - full PCM playback device name
  *   - PlaybackPCMIsDummy
@@ -315,99 +275,49 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
  *      - playback device sample rate
  *   - PlaybackChannels
  *      - playback device channel count
- *   - PlaybackChannel#
- *      - describe index of the logical channel in the PCM stream
- *      - e.g. "PlaybackChannel0 2" - logical channel 0 is third channel in the PCM stream
- *   - PlaybackChannelPos#
- *      - describe sound position of the logical channel (ALSA chmap names)
- *      - e.g. "PlaybackChannel0 FR" - logical channel 0 is at front left
  *   - PlaybackCTL
  *      - playback control device name
  *   - PlaybackVolume
- *      - playback control volume identifier string
- *      - can be parsed using #snd_use_case_parse_ctl_elem_id()
+ *      - playback control volume ID string
  *   - PlaybackSwitch
- *      - playback control switch identifier string
- *	    - can be parsed using #snd_use_case_parse_ctl_elem_id()
- *   - PlaybackPriority
- *      - priority value (1-10000), higher value means higher priority
+ *      - playback control switch ID string
  *   - CaptureRate
  *      - capture device sample rate
  *   - CaptureChannels
  *      - capture device channel count
- *   - CaptureChannel#
- *      - describe index of the logical channel in the PCM stream
- *      - e.g. "CaptureChannel0 2" - logical channel 0 is third channel in the PCM stream
- *   - CaptureChannelPos#
- *      - describe sound position of the logical channel (ALSA chmap names)
- *      - e.g. "CaptureChannel0 FR" - logical channel 0 is at front left
  *   - CaptureCTL
  *      - capture control device name
  *   - CaptureVolume
- *      - capture control volume identifier string
- *	    - can be parsed using #snd_use_case_parse_ctl_elem_id()
+ *      - capture control volume ID string
  *   - CaptureSwitch
- *      - capture control switch identifier string
- *	    - can be parsed using #snd_use_case_parse_ctl_elem_id()
- *   - CapturePriority
- *      - priority value (1-10000), higher value means higher priority
+ *      - capture control switch ID string
  *   - PlaybackMixer
  *      - name of playback mixer
- *   - PlaybackMixerElem
- *      - mixer element playback identifier
- *	    - can be parsed using #snd_use_case_parse_selem_id()
- *   - PlaybackMasterElem
- *      - mixer element playback identifier for the master control
- *	    - can be parsed using #snd_use_case_parse_selem_id()
- *   - PlaybackMasterType
- *      - type of the master volume control
- *      - Valid values: "soft" (software attenuation)
+ *   - PlaybackMixerID
+ *      - mixer playback ID
  *   - CaptureMixer
  *      - name of capture mixer
- *   - CaptureMixerElem
- *      - mixer element capture identifier
- *	    - can be parsed using #snd_use_case_parse_selem_id()
- *   - CaptureMasterElem
- *      - mixer element playback identifier for the master control
- *	    - can be parsed using #snd_use_case_parse_selem_id()
- *   - CaptureMasterType
- *      - type of the master volume control
- *      - Valid values: "soft" (software attenuation)
- *   - CaptureMicInfoFile
- *      - json file with the microphone array placement and type description
- *        (e.g. output from nhlt-dmic-info)
- *   - EDIDFile
- *      - Path to EDID file for HDMI devices
- *   - JackCTL
- *      - jack control device name
- *   - JackControl
- *      - jack control identificator
- *      - can be parsed using snd_use_case_parse_ctl_elem_id()
- *      - UCM configuration files should contain both JackControl and JackDev
- *        when possible, because applications are likely to support only one
- *        or the other
- *   - JackDev
- *      - the input device id of the jack (if the full input device path is
- *        /dev/input/by-id/foo, the JackDev value should be "foo")
- *      - UCM configuration files should contain both JackControl and JackDev
- *        when possible, because applications are likely to support only one
- *        or the other
- *   - JackHWMute
- *	  If this value is set, it indicates that when the jack is plugged
- *	  in, the hardware automatically mutes some other device(s). The
- *	  value is a space-separated list of device names. If the device
- *	  name contains space, it must be enclosed to ' or ", e.g.:
- *		JackHWMute "'Dock Headphone' Headphone"
- *        Note that JackHWMute should be used only when the hardware enforces
- *        the automatic muting. If the hardware doesn't enforce any muting, it
- *        may still be tempting to set JackHWMute to trick upper software layers
- *        to e.g. automatically mute speakers when headphones are plugged in,
- *        but that's application policy configuration that doesn't belong
- *        to UCM configuration files.
- *   - MinBufferLevel
- *	 - This is used on platform where reported buffer level is not accurate.
- *	   E.g. "512", which holds 512 samples in device buffer. Note: this will
- *	   increase latency.
+ *   - CaptureMixerID
+ *      - mixer capture ID
+ *   - JackControl, JackDev, JackHWMute
+ *      - Jack information for a device. The jack status can be reported via
+ *        a kcontrol and/or via an input device. **JackControl** is the
+ *        kcontrol name of the jack, and **JackDev** is the input device id of
+ *        the jack (if the full input device path is /dev/input/by-id/foo, the
+ *        JackDev value should be "foo"). UCM configuration files should
+ *        contain both JackControl and JackDev when possible, because
+ *        applications are likely to support only one or the other.
+ *
+ *        If **JackHWMute** is set, it indicates that when the jack is plugged
+ *        in, the hardware automatically mutes some other device(s). The
+ *        JackHWMute value is a space-separated list of device names (this
+ *        isn't compatible with device names with spaces in them, so don't use
+ *        such device names!). Note that JackHWMute should be used only when
+ *        the hardware enforces the automatic muting. If the hardware doesn't
+ *        enforce any muting, it may still be tempting to set JackHWMute to
+ *        trick upper software layers to e.g. automatically mute speakers when
+ *        headphones are plugged in, but that's application policy
+ *        configuration that doesn't belong to UCM configuration files.
  */
 int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
                      const char *identifier,
@@ -421,8 +331,8 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
  * \return Zero if success, otherwise a negative error code
  *
  * Known identifiers:
- *   - _devstatus/{device}	- return status for given device
- *   - _modstatus/{modifier}	- return status for given modifier
+ *   _devstatus/{device}	- return status for given device
+ *   _modstatus/{modifier}	- return status for given modifier
  */
 int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
 		      const char *identifier,
@@ -436,24 +346,19 @@ int snd_use_case_geti(snd_use_case_mgr_t *uc_mgr,
  * \return Zero if success, otherwise a negative error code
  *
  * Known identifiers:
- *   - _fboot           - execute the fixed boot sequence (value = NULL)
- *   - _boot            - execute the boot sequence (value = NULL)
- *                      - only when driver controls identifiers are changed
- *                        (otherwise the old control values are restored)
- *   - _defaults        - execute the 'defaults' sequence (value = NULL)
- *   - _verb            - set current verb = value
- *   - _enadev          - enable given device = value
- *   - _disdev          - disable given device = value
- *   - _swdev/{old_device} - new_device = value
- *                      - disable old_device and then enable new_device
- *                      - if old_device is not enabled just return
- *                      - check transmit sequence firstly
- *   - _enamod          - enable given modifier = value
- *   - _dismod          - disable given modifier = value
- *   - _swmod/{old_modifier}	- new_modifier = value
- *                      - disable old_modifier and then enable new_modifier
- *                      - if old_modifier is not enabled just return
- *                      - check transmit sequence firstly
+ *   _verb 		- set current verb = value
+ *   _enadev		- enable given device = value
+ *   _disdev		- disable given device = value
+ *   _swdev/{old_device} - new_device = value
+ *			- disable old_device and then enable new_device
+ *			- if old_device is not enabled just return
+ *			- check transmit sequence firstly
+ *   _enamod		- enable given modifier = value
+ *   _dismod		- disable given modifier = value
+ *   _swmod/{old_modifier} - new_modifier = value
+ *			- disable old_modifier and then enable new_modifier
+ *			- if old_modifier is not enabled just return
+ *			- check transmit sequence firstly
  */
 int snd_use_case_set(snd_use_case_mgr_t *uc_mgr,
                      const char *identifier,
@@ -464,25 +369,8 @@ int snd_use_case_set(snd_use_case_mgr_t *uc_mgr,
  * \param uc_mgr Returned use case manager pointer
  * \param card_name Sound card name.
  * \return zero if success, otherwise a negative error code
- *
- * By default only first card is used when the driver card
- * name or long name is passed in the card_name argument.
- *
- * The "strict:" prefix in the card_name defines that
- * there is no driver name / long name matching. The straight
- * configuration is used.
- *
- * The "hw:" prefix in the card_name will load the configuration
- * for the ALSA card specified by the card index (value) or
- * the card string identificator.
- *
- * The sound card might be also composed from several physical
- * sound cards (for the default and strict card_name).
- * The application cannot expect that the device names will refer
- * only one ALSA sound card in this case.
  */
-int snd_use_case_mgr_open(snd_use_case_mgr_t **uc_mgr,
-                          const char *card_name);
+int snd_use_case_mgr_open(snd_use_case_mgr_t **uc_mgr, const char *card_name);
 
 
 /**
@@ -531,28 +419,6 @@ static __inline__ int snd_use_case_verb_list(snd_use_case_mgr_t *uc_mgr,
 {
 	return snd_use_case_get_list(uc_mgr, "_verbs", list);
 }
-
-/**
- * \brief Parse control element identifier
- * \param dst Element identifier
- * \param ucm_id Use case identifier
- * \param value String value to be parsed
- * \return Zero if success, otherwise a negative error code
- */
-int snd_use_case_parse_ctl_elem_id(snd_ctl_elem_id_t *dst,
-				   const char *ucm_id,
-				   const char *value);
-
-/**
- * \brief Parse mixer element identifier
- * \param dst Simple mixer element identifier
- * \param ucm_id Use case identifier
- * \param value String value to be parsed
- * \return Zero if success, otherwise a negative error code
- */
-int snd_use_case_parse_selem_id(snd_mixer_selem_id_t *dst,
-				const char *ucm_id,
-				const char *value);
 
 /**
  *  \}
