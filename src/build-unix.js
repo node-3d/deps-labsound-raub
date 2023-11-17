@@ -41,7 +41,10 @@ const updateSystem = async () => {
 const buildLib = async () => {
 	try {
 		console.log(`LABSOUND Build Started`);
-		const { stderr } = await exec(`sh ${getScriptForLib()}`);
+		const { stderr, stdout } = await exec(`sh ${getScriptForLib()}`);
+		if (stdout) {
+			console.error(stdout);
+		}
 		if (stderr) {
 			console.error(stderr);
 		}
