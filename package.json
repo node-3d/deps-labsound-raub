@@ -38,7 +38,7 @@
 	"scripts": {
 		"postinstall": "node install",
 		"eslint": "eslint .",
-		"test-ci": "node --test"
+		"test": "node --test"
 	},
 	"engines": {
 		"node": ">=18.16.0",
