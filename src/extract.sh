@@ -1,5 +1,5 @@
 rm -rf src/LabSound-1.2.0
-unzip -qq src/LabSound-1.2.0.zip -d .
+unzip -qq src/LabSound-1.2.0.zip -d src
 
 unzip -qq src/alsa.zip -d src/LabSound-1.2.0/include
 
