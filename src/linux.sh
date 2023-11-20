@@ -3,7 +3,7 @@
 	mkdir -p build
 	cd build
 	
-	cmake -DLABSOUND_ASOUND=1 ..
+	cmake -DLABSOUND_ASOUND=1 -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
 	
 	cmake --build . --target samplerate --config Release
 	cmake --build . --target libnyquist --config Release
