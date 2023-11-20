@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('node:path');
 const util = require('node:util');
 const exec = util.promisify(require('node:child_process').exec);
 
@@ -33,9 +32,9 @@ const updateSystem = async () => {
 		}
 		console.log('-------------------');
 		console.log('Extracting Alsa');
-		const { stderr } = await exec(`sh src/extract-${platform}.sh`);
-		if (stderr) {
-			console.error(stderr);
+		const { stderr2 } = await exec(`sh src/extract-${platform}.sh`);
+		if (stderr2) {
+			console.error(stderr2);
 		}
 		console.log('-------------------');
 	} catch (error) {
@@ -46,7 +45,7 @@ const updateSystem = async () => {
 
 const buildLib = async () => {
 	try {
-		console.log(`LABSOUND Build Started`);
+		console.log('LABSOUND Build Started');
 		const { stderr, stdout } = await exec(`sh ${getScriptForLib()}`);
 		if (stdout) {
 			console.error(stdout);
@@ -54,7 +53,7 @@ const buildLib = async () => {
 		if (stderr) {
 			console.error(stderr);
 		}
-		console.log(`LABSOUND Build Finished`);
+		console.log('LABSOUND Build Finished');
 		console.log('-------------------');
 	} catch (error) {
 		fail(error);

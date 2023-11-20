@@ -1,7 +1,4 @@
 {
-	"ignorePatterns": [
-		"src/**"
-	],
 	"extends": [
 		"eslint:recommended",
 		"plugin:node/recommended"
