@@ -24,7 +24,7 @@ const fail = (error) => {
 		
 		if (['linux', 'aarch64'].includes(platform)) {
 			await copy(
-				path.resolve('src/alsa-${platform}/libasound.so'),
+				path.resolve(`src/alsa-${platform}/libasound.so`),
 				`${binPath}/libasound.so`,
 			);
 		}
