@@ -25,7 +25,10 @@ const fail = (error) => {
 		await ensuredir(binPath);
 		
 		if (['linux', 'aarch64'].includes(platform)) {
-			await copy(path.resolve('src/libasound.so'), `${binPath}/libasound.so`);
+			await copy(
+				path.resolve('src/alsa-${platform}/libasound.so'),
+				`${binPath}/libasound.so`,
+			);
 		}
 		
 		await copyall(path.resolve('src/build'), binPath);

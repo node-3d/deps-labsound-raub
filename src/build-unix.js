@@ -32,6 +32,12 @@ const updateSystem = async () => {
 			console.error(stderr);
 		}
 		console.log('-------------------');
+		console.log('Extracting Alsa');
+		const { stderr } = await exec(`sh src/extract-${platform}.sh`);
+		if (stderr) {
+			console.error(stderr);
+		}
+		console.log('-------------------');
 	} catch (error) {
 		fail(error);
 	}
