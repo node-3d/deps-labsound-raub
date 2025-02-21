@@ -12,4 +12,9 @@ declare module "deps-labsound-raub" {
 	 * Include directory for this module
 	*/
 	export const include: string;
+	
+	/**
+	 * Path to HRTF directory.
+	*/
+	export const hrtf: string;
 }
