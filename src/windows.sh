@@ -3,7 +3,7 @@
 	mkdir -p build
 	cd build
 	
-	cmake -A x64 -D CMAKE_POLICY_DEFAULT_CMP0091=NEW ..
+	cmake -A x64 -D CMAKE_POLICY_DEFAULT_CMP0091=NEW -T v142 ..
 	
 	cmake --build . --target samplerate --config Release
 	cmake --build . --target libnyquist --config Release
