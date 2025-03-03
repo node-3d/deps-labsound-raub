@@ -1,13 +1,21 @@
-rm -rf src/LabSound-1.2.0
-unzip -qq src/LabSound-1.2.0.zip -d src
-
-unzip -qq src/alsa.zip -d src/LabSound-1.2.0/include
-
-unzip -qq src/libsamplerate-0.2.2.zip -d src/LabSound-1.2.0/third_party/libsamplerate-0.2.2
-mv src/LabSound-1.2.0/third_party/libsamplerate-0.2.2/libsamplerate-0.2.2/* src/LabSound-1.2.0/third_party/libsamplerate
-
-unzip -qq src/libnyquist-master.zip -d src/LabSound-1.2.0/third_party/libnyquist
-mv src/LabSound-1.2.0/third_party/libnyquist/libnyquist-master/* src/LabSound-1.2.0/third_party/libnyquist
-
-rm -rf src/build
-mkdir -p src/build
+(
+	cd src
+	
+	rm -rf build LabSound-1.2.0
+	mkdir -p build
+	
+	git clone --depth 1 -b Bugfixes https://github.com/Avataren/LabSound.git LabSound-1.2.0
+	
+	rm -rf ../include/LabSound
+	cp LabSound-1.2.0/include/LabSound/* ../include/LabSound
+	
+	unzip -qq alsa.zip -d LabSound-1.2.0/include
+	
+	unzip -qq libsamplerate-0.2.2.zip -d LabSound-1.2.0/third_party/libsamplerate-0.2.2
+	mv LabSound-1.2.0/third_party/libsamplerate-0.2.2/libsamplerate-0.2.2/* LabSound-1.2.0/third_party/libsamplerate
+	
+	(
+		cd LabSound-1.2.0/third_party
+		git clone --depth 1 -b v0.7 https://github.com/dafx/libnyquist.git
+	)
+)
