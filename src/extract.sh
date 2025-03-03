@@ -13,6 +13,7 @@
 	(
 		cd LabSound-1.2.0/third_party
 		git clone --depth 1 -b 0.2.2 https://github.com/libsndfile/libsamplerate.git
+		git clone --depth 1 -b 0.11.22 https://github.com/mackron/miniaudio.git
 		git clone --depth 1 -b v0.7 https://github.com/dafx/libnyquist.git
 	)
 )
