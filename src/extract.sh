@@ -7,9 +7,8 @@
 	git clone --depth 1 -b Bugfixes https://github.com/Avataren/LabSound.git LabSound-1.2.0
 	
 	rm -rf ../include/LabSound
-	cp LabSound-1.2.0/include/LabSound/* ../include/LabSound
-	
-	unzip -qq alsa.zip -d LabSound-1.2.0/include
+	mkdir -p ../include/LabSound
+	cp -r LabSound-1.2.0/include/LabSound/* ../include/LabSound
 	
 	unzip -qq libsamplerate-0.2.2.zip -d LabSound-1.2.0/third_party/libsamplerate-0.2.2
 	mv LabSound-1.2.0/third_party/libsamplerate-0.2.2/libsamplerate-0.2.2/* LabSound-1.2.0/third_party/libsamplerate

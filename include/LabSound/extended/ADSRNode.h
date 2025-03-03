@@ -47,6 +47,8 @@ public:
     std::shared_ptr<AudioSetting> sustainTime() const;  // Duration in seconds
     std::shared_ptr<AudioSetting> sustainLevel() const;  // Level
     std::shared_ptr<AudioSetting> releaseTime() const;  // Duration in seconds
+
+    bool isReleaseCompleted() const;
 };
 
 }

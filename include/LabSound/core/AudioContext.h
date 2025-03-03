@@ -6,8 +6,6 @@
 #ifndef lab_audio_context_h
 #define lab_audio_context_h
 
-#include "LabSound/core/AudioDevice.h"
-#include "LabSound/core/AudioHardwareDeviceNode.h"
 #include "LabSound/core/AudioScheduledSourceNode.h"
 
 #include <atomic>
@@ -20,16 +18,16 @@
 #include <thread>
 #include <vector>
 
-namespace lab
-{
+namespace lab {
 
-class AudioHardwareDeviceNode;
+class AudioBus;
+class AudioHardwareInputNode;
 class AudioListener;
 class AudioNode;
-class AudioScheduledSourceNode;
-class AudioHardwareInputNode;
 class AudioNodeInput;
 class AudioNodeOutput;
+class AudioDestinationNode;
+class AudioScheduledSourceNode;
 class ContextGraphLock;
 class ContextRenderLock;
 class HRTFDatabaseLoader;
@@ -38,6 +36,7 @@ class AudioContext
 {
     friend class ContextGraphLock;
     friend class ContextRenderLock;
+    friend class AudioDestinationNode;
 
 public:
 
@@ -100,14 +99,17 @@ public:
 
     float sampleRate() const;
 
-    void setDeviceNode(std::shared_ptr<AudioNode> device);
-    std::shared_ptr<AudioNode> device();
+    void setDestinationNode(std::shared_ptr<AudioDestinationNode> node);
+    std::shared_ptr<AudioDestinationNode> destinationNode();
     std::shared_ptr<AudioListener> listener();
 
     // Debugging/Sanity Checking
     std::string m_graphLocker;
     std::string m_renderLocker;
     void debugTraverse(AudioNode * root);
+    void diagnose(std::shared_ptr<AudioNode>);
+    void diagnosed_silence(const char*  msg);
+    std::shared_ptr<AudioNode> diagnosing() const { return _diagnose; }
 
     // Timing related
 
@@ -140,6 +142,14 @@ public:
     // if the context was suspended, resume the progression of time and processing
     // in the audio context
     void resume();
+    
+    // Close releases any system audio resources that it uses. It is asynchronous,
+    // returning a promise object that can wait() until all AudioContext-creation-blocking
+    // resources have been released. Closed contexts can decode audio data, create
+    // buffers, etc. Closing the context will forcibly release any system audio resources
+    // that might prevent additional AudioContexts from being created and used, suspend
+    // the progression of audio time in the audio context, and stop processing audio data.
+    void close();
 
     // Called at the start of each render quantum.
     void handlePreRenderTasks(ContextRenderLock &);
@@ -156,11 +166,11 @@ public:
 
     // Called right before handlePostRenderTasks() to handle nodes which need to
     // be pulled even when they are not connected to anything.
-    // Only an AudioHardwareDeviceNode should call this.
+    // Only an AudioDestinationNode should call this.
     void processAutomaticPullNodes(ContextRenderLock &, int framesToProcess);
 
     // graph management
-    
+    //
     void connect(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source, int destIdx = 0, int srcIdx = 0);
     void disconnect(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source, int destIdx = 0, int srcidx = 0);
     bool isConnected(std::shared_ptr<AudioNode> destination, std::shared_ptr<AudioNode> source);
@@ -174,7 +184,7 @@ public:
     void synchronizeConnections(int timeOut_ms = 1000);
 
     // parameter management
-    
+    //
     // connect a parameter to receive the indexed output of a node
     void connectParam(std::shared_ptr<AudioParam> param, std::shared_ptr<AudioNode> driver, int index);
 
@@ -184,9 +194,8 @@ public:
     // disconnect a parameter from the indexed output of a node
     void disconnectParam(std::shared_ptr<AudioParam> param, std::shared_ptr<AudioNode> driver, int index);
 
-
     // events
-    
+    //    
     // event dispatching will be called automatically, depending on constructor
     // argument. If not automatically dispatching, it is the user's responsibility
     // to call dispatchEvents often enough to satisfy the user's needs.
@@ -216,7 +225,7 @@ private:
     float graphKeepAlive{0.f};
     float lastGraphUpdateTime{0.f};
 
-    bool m_isInitialized = false;
+    std::atomic<int> _contextIsInitialized{0};
     bool m_isAudioThreadFinished = false;
     bool m_isOfflineContext = false;
     bool m_automaticPullNodesNeedUpdating = false;  // indicates m_automaticPullNodes was modified.
@@ -226,11 +235,10 @@ private:
     void updateAutomaticPullNodes();
     void uninitialize();
 
-    AudioDeviceRenderCallback * device_callback{nullptr};
-    std::shared_ptr<AudioNode> m_device;
+    std::shared_ptr<AudioDestinationNode> _destinationNode;
 
     std::shared_ptr<AudioListener> m_listener;
-
+    std::shared_ptr<AudioNode> _diagnose;
     std::set<std::shared_ptr<AudioNode>> m_automaticPullNodes;  // queue for added pull nodes
     std::vector<std::shared_ptr<AudioNode>> m_renderingAutomaticPullNodes;  // vector of known pull nodes
 };

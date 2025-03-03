@@ -13,6 +13,7 @@
 namespace lab
 {
 
+class ContextRenderLock;
 using lab::Channel;
 using lab::ChannelInterpretation;
 
@@ -40,6 +41,7 @@ public:
 
     // Channels
     int numberOfChannels() const { return static_cast<int>(m_channels.size()); }
+    void setNumberOfChannels(ContextRenderLock&, int c);
 
     // Use this when looping over channels
     AudioChannel * channel(int channel) { return m_channels[channel].get(); }
@@ -99,7 +101,7 @@ public:
     void copyWithGainFrom(const AudioBus & sourceBus, float * lastMixGain, float targetGain);
 
     // Copies the sourceBus by scaling with sample-accurate gain values.
-    void copyWithSampleAccurateGainValuesFrom(const AudioBus & sourceBus, float * gainValues, int numberOfGainValues);
+    void copyWithSampleAccurateGainValuesFrom(const AudioBus & sourceBus, const float* gainValues, int numberOfGainValues);
 
     // Returns maximum absolute value across all channels (useful for normalization).
     float maxAbsValue() const;
