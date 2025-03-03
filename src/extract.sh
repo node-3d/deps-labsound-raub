@@ -10,11 +10,9 @@
 	mkdir -p ../include/LabSound
 	cp -r LabSound-1.2.0/include/LabSound/* ../include/LabSound
 	
-	unzip -qq libsamplerate-0.2.2.zip -d LabSound-1.2.0/third_party/libsamplerate-0.2.2
-	mv LabSound-1.2.0/third_party/libsamplerate-0.2.2/libsamplerate-0.2.2/* LabSound-1.2.0/third_party/libsamplerate
-	
 	(
 		cd LabSound-1.2.0/third_party
+		git clone --depth 1 -b 0.2.2 https://github.com/libsndfile/libsamplerate.git
 		git clone --depth 1 -b v0.7 https://github.com/dafx/libnyquist.git
 	)
 )
