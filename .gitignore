@@ -6,6 +6,7 @@
 .vscode
 node_modules/
 src/LabSound-*/
+src/LabSound/
 src/build/
 bin-*/
 *.log
