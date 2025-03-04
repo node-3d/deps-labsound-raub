@@ -1,5 +1,5 @@
 (
-	cd src/LabSound-1.2.0
+	cd src/LabSound
 	mkdir -p build
 	cd build
 	
@@ -8,8 +8,8 @@
 	cmake --build . --config Release
 )
 
-cp src/LabSound-1.2.0/build/bin/Release/LabSound.lib src/build/LabSound.lib
+cp src/LabSound/build/bin/Release/LabSound.lib src/build/LabSound.lib
 
-ls src/LabSound-1.2.0/build/third_party
-cp src/LabSound-1.2.0/build/third_party/libnyquist/lib/Release/libnyquist.lib src/build/libnyquist.lib
-cp src/LabSound-1.2.0/build/third_party/libsamplerate/src/Release/samplerate.lib src/build/samplerate.lib
+ls src/LabSound/build/third_party
+cp src/LabSound/build/third_party/libnyquist/lib/Release/libnyquist.lib src/build/libnyquist.lib
+cp src/LabSound/build/third_party/libsamplerate/src/Release/samplerate.lib src/build/samplerate.lib
