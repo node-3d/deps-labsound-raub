@@ -7,7 +7,7 @@
 //
 //  For a complete explanation of the wavetable oscillator and code,
 //  read the series of articles by the author, starting here:
-//  www.earlevel.com/main/2012/05/03/a-wavetable-oscillator—introduction/
+//  www.earlevel.com/main/2012/05/03/a-wavetable-oscillatorï¿½introduction/
 //
 //  This version has optimizations described here:
 //  www.earlevel.com/main/2019/04/28/wavetableosc-optimized/
@@ -28,6 +28,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <math.h>
 
 namespace lab
 {
