@@ -3,7 +3,7 @@
 	mkdir -p build
 	cd build
 	
-	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF -E env CXXFLAGS="-w" ..
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF ..
 	
 	cmake --build . --config Release
 )

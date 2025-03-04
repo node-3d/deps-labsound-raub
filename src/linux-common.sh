@@ -3,7 +3,7 @@
 	mkdir -p build
 	cd build
 	
-	cmake -DLABSOUND_ASOUND=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF -E env CXXFLAGS="-w" ..
+	cmake -DLABSOUND_ASOUND=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF ..
 	
 	cmake --build . --config Release
 )
