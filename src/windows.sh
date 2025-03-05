@@ -14,7 +14,7 @@
 	cd src
 	
 	cp LabSound/build/bin/Release/LabSound.lib build/LabSound.lib
-	cp LabSound/build/bin/Release/LabSound.lib build/LabSoundRtAudio.lib
-	cp LabSound/build/bin/Release/LabSound.lib build/LabSoundMiniAudio.lib
+	cp LabSound/build/bin/Release/LabSoundRtAudio.lib build/LabSoundRtAudio.lib
+	cp LabSound/build/bin/Release/LabSoundMiniAudio.lib build/LabSoundMiniAudio.lib
 	cp LabSound/build/third_party/libnyquist/lib/Release/libnyquist.lib build/libnyquist.lib
 )
