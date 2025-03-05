@@ -5,7 +5,10 @@
 	
 	cmake -DLABSOUND_ASOUND=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF ..
 	
-	cmake --build . --config Release
+	cmake --build . --target libnyquist --config Release
+	cmake --build . --target LabSound --config Release
+	cmake --build . --target LabSoundRtAudio --config Release
+	cmake --build . --target LabSoundMiniAudio --config Release
 )
 
 cp src/LabSound/build/bin/libLabSound.a src/build/libLabSound.a

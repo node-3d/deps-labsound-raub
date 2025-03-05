@@ -3,13 +3,17 @@
 	mkdir -p build
 	cd build
 	
-	cmake -A x64 -DCMAKE_BUILD_TYPE=Release -T v142 -DCMAKE_RULE_MESSAGES=OFF ..
-	
-	cmake --build . --config Release
+	cmake -A x64 -T v142 ..
+	cmake --build . --target libnyquist --config Release
+	cmake --build . --target LabSound --config Release
+	cmake --build . --target LabSoundRtAudio --config Release
+	cmake --build . --target LabSoundMiniAudio --config Release
 )
 
-cp src/LabSound/build/bin/Release/LabSound.lib src/build/LabSound.lib
-
-ls src/LabSound/build/third_party
-cp src/LabSound/build/third_party/libnyquist/lib/Release/libnyquist.lib src/build/libnyquist.lib
-cp src/LabSound/build/third_party/libsamplerate/src/Release/samplerate.lib src/build/samplerate.lib
+(
+	cd src
+	cp LabSound/build/bin/Release/LabSound.lib build/LabSound.lib
+	cp LabSound/build/bin/Release/LabSound.lib build/LabSoundRtAudio.lib
+	cp LabSound/build/bin/Release/LabSound.lib build/LabSoundMiniAudio.lib
+	cp LabSound/build/third_party/libnyquist/lib/Release/libnyquist.lib build/libnyquist.lib
+)
