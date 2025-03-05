@@ -13,7 +13,6 @@
 
 (
 	cd src
-	>&2 ls LabSound/build/third_party/libnyquist/lib
 	
 	cp LabSound/build/bin/LabSound.framework/Versions/A/LabSound build/LabSound
 	cp LabSound/build/bin/libLabSoundMiniAudio.a build/libLabSoundMiniAudio.a
