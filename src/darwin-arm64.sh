@@ -13,7 +13,7 @@
 
 (
 	cd src
-	>&2 ls LabSound/build/bin/Release
+	>&2 ls LabSound/build/bin
 	>&2 echo --------
 	>&2 ls LabSound/build/third_party/libnyquist
 	
