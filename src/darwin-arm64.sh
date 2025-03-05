@@ -11,7 +11,14 @@
 	cmake --build . --target LabSoundMiniAudio --config Release
 )
 
-cp src/LabSound/build/bin/Release/LabSound.framework/Versions/A/LabSound src/build/LabSound
-cp src/LabSound/build/bin/Release/LabSoundRtAudio.framework/Versions/A/LabSoundRtAudio src/build/LabSoundRtAudio
-cp src/LabSound/build/bin/Release/LabSoundMiniAudio.framework/Versions/A/LabSoundMiniAudio src/build/LabSoundMiniAudio
-cp src/LabSound/build/third_party/libnyquist/lib/Release/liblibnyquist.a src/build/liblibnyquist.a
+(
+	cd src
+	>&2 ls LabSound/build/bin/Release
+	>&2 echo --------
+	>&2 ls LabSound/build/third_party/libnyquist
+	
+	# cp LabSound/build/bin/Release/LabSound.framework/Versions/A/LabSound build/LabSound
+	# cp LabSound/build/bin/Release/LabSoundRtAudio.framework/Versions/A/LabSoundRtAudio build/LabSoundRtAudio
+	# cp LabSound/build/bin/Release/LabSoundMiniAudio.framework/Versions/A/LabSoundMiniAudio build/LabSoundMiniAudio
+	# cp LabSound/build/third_party/libnyquist/lib/Release/liblibnyquist.a build/liblibnyquist.a
+)
