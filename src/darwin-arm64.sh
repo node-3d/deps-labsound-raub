@@ -13,12 +13,10 @@
 
 (
 	cd src
-	>&2 ls LabSound/build/bin
-	>&2 echo --------
-	>&2 ls LabSound/build/third_party/libnyquist
+	>&2 ls LabSound/build/third_party/libnyquist/lib
 	
-	# cp LabSound/build/bin/Release/LabSound.framework/Versions/A/LabSound build/LabSound
-	# cp LabSound/build/bin/Release/LabSoundRtAudio.framework/Versions/A/LabSoundRtAudio build/LabSoundRtAudio
-	# cp LabSound/build/bin/Release/LabSoundMiniAudio.framework/Versions/A/LabSoundMiniAudio build/LabSoundMiniAudio
-	# cp LabSound/build/third_party/libnyquist/lib/Release/liblibnyquist.a build/liblibnyquist.a
+	cp LabSound/build/bin/LabSound.framework/Versions/A/LabSound build/LabSound
+	cp LabSound/build/bin/libLabSoundMiniAudio.a build/libLabSoundMiniAudio.a
+	cp LabSound/build/bin/libLabSoundRtAudio.a build/libLabSoundRtAudio.a
+	cp LabSound/build/third_party/libnyquist/lib/liblibnyquist.a build/liblibnyquist.a
 )
