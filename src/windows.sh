@@ -12,6 +12,7 @@
 
 (
 	cd src
+	
 	cp LabSound/build/bin/Release/LabSound.lib build/LabSound.lib
 	cp LabSound/build/bin/Release/LabSound.lib build/LabSoundRtAudio.lib
 	cp LabSound/build/bin/Release/LabSound.lib build/LabSoundMiniAudio.lib
