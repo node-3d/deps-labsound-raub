@@ -12,7 +12,7 @@
 
 namespace lab
 {
-	class WaveTableMemory;
+	struct WaveTableMemory;
 
 	int fillTables(WaveTableMemory * osc, double * freqWaveRe, double * freqWaveIm, int numSamples);
 	int fillTables2(WaveTableMemory * osc, double * freqWaveRe, double * freqWaveIm, int numSamples, double minTop = 0.4, double maxTop = 0);
