@@ -3,7 +3,7 @@
 	mkdir -p build
 	cd build
 	
-	cmake -DLABSOUND_ASOUND=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF ..
+	cmake -DLABSOUND_ASOUND=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF -DLABSOUND_USE_RTAUDIO=ON ..
 	
 	cmake --build . --target libnyquist --config Release
 	cmake --build . --target LabSound --config Release

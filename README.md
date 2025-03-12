@@ -14,17 +14,28 @@ npm i -s deps-labsound-raub
 This dependency package is distributing **LabSound**
 binaries through **NPM** for **Node.js** addons.
 
-* Platforms (x64): Windows x64, Linux x64, OSX x64, Linux Aarch64.
-* Libraries: LabSound, libnyquist, libwavpack.
-* Linking: static lib-type.
+* Platforms (x64): Windows, Linux, MacOS ARM, Linux ARM.
+* Libraries: LabSound, libnyquist.
+* Linking: static lib.
+* Backend: RtAudio.
 
 LabSound is documented in the
 [official repository](https://github.com/LabSound/LabSound).
 
+The original LabSound sources are slightly modified, and now include:
+* Unreleased commits from [LabSound/LabSound](https://github.com/LabSound/LabSound).
+* Extra work from [Avataren/LabSound:Bugfixes](https://github.com/Avataren/LabSound/tree/Bugfixes).
+* CMake configuration tweaks to build fewer binaries.
+* Locally added fixes for AudioNode and AudioContext.
+* See fork [raub/LabSound](https://github.com/raub/LabSound) - you can review all changes since `LabSound@1.2.0`.
+
+
+> For unmodified `LabSound@1.2.0`, use `deps-labsound-raub@<=5.0.0`.
+
 
 ## binding.gyp
 
-See in [webaudio-raub](https://github.com/node-3d/webaudio-raub/tree/master/src) Node.js addon.
+See example in [webaudio-raub](https://github.com/node-3d/webaudio-raub/tree/master/src) Node.js addon.
 
 
 ## HRTF Database
@@ -43,4 +54,3 @@ const { hrtf } = require('deps-labsound-raub');
 This software uses the [LabSound audio engine](https://github.com/LabSound/LabSound) under BSD Clause 2.
 A copy of LabSound license [is included](/LABSOUND_BSD), and can also be found at
 [LabSound repository](https://github.com/LabSound/LabSound/blob/master/LICENSE).
-No changes to the original LabSound sources were made.

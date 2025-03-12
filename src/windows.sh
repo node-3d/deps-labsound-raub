@@ -3,7 +3,7 @@
 	mkdir -p build
 	cd build
 	
-	cmake -A x64 -T v142 ..
+	cmake -A x64 -T v142 -DLABSOUND_USE_RTAUDIO=ON ..
 	cmake --build . --target libnyquist --config Release
 	cmake --build . --target LabSound --config Release
 	# cmake --build . --target LabSoundRtAudio --config Release
