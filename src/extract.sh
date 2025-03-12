@@ -4,7 +4,7 @@
 	rm -rf build LabSound
 	mkdir -p build
 	
-	git clone --depth 1 -b test-1.3.0 https://github.com/raub/LabSound.git LabSound
+	git clone --depth 1 -b 1.3.0-raub https://github.com/raub/LabSound.git LabSound
 	
 	rm -rf ../include/LabSound
 	mkdir -p ../include/LabSound
