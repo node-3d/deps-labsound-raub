@@ -5,7 +5,8 @@
 	
 	cmake \
 		-DCMAKE_BUILD_TYPE=Release -DCMAKE_RULE_MESSAGES=OFF \
-		-DLABSOUND_USE_RTAUDIO=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
+		-DLABSOUND_USE_RTAUDIO=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+		-DCMAKE_OSX_DEPLOYMENT_TARGET="11.0" ..
 	
 	cmake --build . --target libnyquist --config Release
 	cmake --build . --target LabSound --config Release
